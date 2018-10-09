@@ -1,0 +1,5 @@
+{
+    "require": {
+        "viancen/eazycv-client": "^1.2"
+    }
+}
