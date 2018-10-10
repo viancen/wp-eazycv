@@ -1,0 +1,12 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+#wpeazycv_settings_page .form-field input {
+    width: 25em;
+}
+
+.pad10 {
+    padding: 10px;
+}
