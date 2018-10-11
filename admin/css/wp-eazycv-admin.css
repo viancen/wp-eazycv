@@ -1,0 +1,13 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.eazycv-admin-input {
+    padding: 8px !important;
+    width: 100%;
+}
+
+.eazycv-admin-select {
+    width: 100%;
+}
