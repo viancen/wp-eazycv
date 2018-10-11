@@ -112,6 +112,22 @@ class Wp_EazyCV_Public {
 
 			}
 		}
+
+		//sets meta data and pre thingies before rendering the shortcodes on our pages
+		$pagename = get_query_var( 'EazyApplyTo' );
+		if ( ! empty( $pagename ) ) {
+			$jobId = explode( '-', $pagename );
+			$jobId = array_pop( $jobId );
+
+			if ( intval( $jobId ) ) {
+
+				$this->job = $this->api->get( 'jobs/published/' . $jobId );
+
+				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50 );
+				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
+
+			}
+		}
 	}
 
 	/**
@@ -137,6 +153,7 @@ class Wp_EazyCV_Public {
 		function add_eazycv_vars( $vars ) {
 			$vars[] = 'JobID';
 			$vars[] = 'EazyCVSearch';
+			$vars[] = 'EazyApplyTo';
 
 			return $vars;
 		}
@@ -149,6 +166,19 @@ class Wp_EazyCV_Public {
 				add_rewrite_rule(
 					'^' . get_option( 'wp_eazycv_jobpage' ) . '/([^/]*)/?',
 					'index.php?pagename=' . get_option( 'wp_eazycv_jobpage' ) . '&JobID=$matches[1]',
+					'top'
+				);
+			}
+		}
+
+		add_action( 'init', 'add_apply_rule' );
+		function add_apply_rule( $jobPage ) {
+			$jobPage = get_option( 'wp_eazycv_apply_page' );
+
+			if ( $jobPage ) {
+				add_rewrite_rule(
+					'^' . get_option( 'wp_eazycv_apply_page' ) . '/([^/]*)/?',
+					'index.php?pagename=' . get_option( 'wp_eazycv_apply_page' ) . '&EazyApplyTo=$matches[1]',
 					'top'
 				);
 			}
@@ -235,10 +265,32 @@ class Wp_EazyCV_Public {
 	}
 
 	/**
+	 * Shortcode Function
+	 *
+	 * @param  Attributes $atts l|t URL TEXT.
+	 *
+	 * @return string
+	 * @since  1.0.0
+	 */
+	function shortcode_eazycv_apply( $atts ) {
+
+		if ( empty( $this->api ) ) {
+			//
+			return 'EazyCV not connected';
+		} else {
+			$emolJobView = new Wp_EazyCV_Apply( $this->api, $this->job );
+
+			return $emolJobView->render();
+		}
+
+	}
+
+	/**
 	 * add shortcodes for eazy
 	 */
 	public function setup_shortcodes() {
 		add_shortcode( 'eazycv_job', array( $this, 'shortcode_eazycv_job' ) );
+		add_shortcode( 'eazycv_apply', array( $this, 'shortcode_eazycv_apply' ) );
 		add_shortcode( 'eazycv_job_search', array( $this, 'shortcode_eazycv_job_search' ) );
 
 	}

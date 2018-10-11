@@ -225,11 +225,15 @@ class Wp_EazyCV_Admin {
 	}
 
 	private function register_job_options() {
+
 		add_settings_section( $this->plugin_name . "-job_section", null, null, $this->plugin_name . "-job-options" );
 		add_settings_field( $this->option_name . "_jobpage", __( "Job Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage' ) );
 		add_settings_field( $this->option_name . "_jobsearch_page", __( "Job Search Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page' ) );
+		add_settings_field( $this->option_name . "_apply_page", __( "Apply Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page' ) );
+
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobpage" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobsearch_page" );
+		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_page" );
 
 	}
 

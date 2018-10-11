@@ -16,8 +16,13 @@ class Wp_EazyCV_Job {
 
 			$html .= '<h3>' . $text['heading_label'] . '</h3>';
 			$html .= '<p>' . $text['content'] . '</p>';
-		}
 
+		}
+		if(!empty($this->job )){
+			$html .= '<a href="/'.get_option('wp_eazycv_apply_page').'/'.sanitize_title($this->job['functiontitle']).'-'.$this->job['id'].'">' .__('Apply To Job') . '</a>';
+		} else {
+			$html .= '<a href="/'.get_option('wp_eazycv_apply_page').'/open">'  .__('Apply To Job') .'</a>';
+		}
 		return $html;
 	}
 }

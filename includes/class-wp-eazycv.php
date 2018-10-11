@@ -152,6 +152,7 @@ class wp_eazycv {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'views/job-view.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'views/job-search.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'views/apply.php';
 
 		/**
 		 * EazyCV client
