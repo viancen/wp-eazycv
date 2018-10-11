@@ -107,7 +107,7 @@ class Wp_EazyCV_Public {
 
 				$this->job = $this->api->get( 'jobs/published/' . $jobId );
 
-				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50 );
+				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50, 1 );
 				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
 
 			}
@@ -123,7 +123,8 @@ class Wp_EazyCV_Public {
 
 				$this->job = $this->api->get( 'jobs/published/' . $jobId );
 
-				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50 );
+
+				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50, 1 );
 				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
 
 			}
@@ -133,8 +134,29 @@ class Wp_EazyCV_Public {
 	/**
 	 * @return mixed
 	 */
-	public function change_page_title() {
-		return $this->job['functiontitle'];
+	public function change_page_title( $baseOption = null ) {
+		if ( empty( $baseOption ) ) {
+			$getTitle = get_option( 'wp_eazycv_jobpage_title' );
+		} else {
+			$getTitle = get_option( $baseOption );
+		}
+		if ( ! empty( $getTitle ) ) {
+			foreach ( $this->job as $key => $val ) {
+				if ( is_string( $val ) ) {
+					$getTitle = str_ireplace( '*|' . $key . '|*', $val, $getTitle );
+				} elseif ( is_array( $val ) ) {
+					foreach ( $val as $kkey => $vval ) {
+						if ( is_string( $vval ) ) {
+							$getTitle = str_ireplace( '*|' . $key . '.' . $kkey . '|*', $vval, $getTitle );
+						}
+					}
+				}
+			}
+		} else {
+			$getTitle = $this->job['functiontitle'];
+		}
+
+		return $getTitle;
 	}
 
 	/**
@@ -236,7 +258,7 @@ class Wp_EazyCV_Public {
 			//
 			return 'Not available anymeer';
 		} else {
-			$emolJobView = new Wp_EazyCV_Job( $this->job , $this->api );
+			$emolJobView = new Wp_EazyCV_Job( $this->job, $this->api );
 
 			return $emolJobView->render();
 		}
