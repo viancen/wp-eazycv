@@ -228,11 +228,12 @@ class Wp_EazyCV_Admin {
 
 		add_settings_section( $this->plugin_name . "-job_section", null, null, $this->plugin_name . "-job-options" );
 		add_settings_field( $this->option_name . "_jobpage", __( "Job Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage' ) );
-		add_settings_field( $this->option_name . "_jobpage_title", __( "Job Page SEO Title Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage_title' ) );
+		add_settings_field( $this->option_name . "_jobpage_title", __( "Job PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage_title' ) );
 		add_settings_field( $this->option_name . "_jobsearch_page", __( "Job Search Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page' ) );
-		add_settings_field( $this->option_name . "_jobsearch_page_title", __( "Job Search SEO Title Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page_title' ) );
+		add_settings_field( $this->option_name . "_jobsearch_page_title", __( "Job Search Title" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page_title' ) );
 		add_settings_field( $this->option_name . "_apply_page", __( "Apply Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page' ) );
-		add_settings_field( $this->option_name . "_apply_page_title", __( "Apply Page SEO Title Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page_title' ) );
+		add_settings_field( $this->option_name . "_apply_page_title", __( "Apply PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page_title' ) );
+		add_settings_field( $this->option_name . "_apply_form", __( "Apply Form settings" ), array( $this, "list_eazycv_forms" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_form' ) );
 
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobpage" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobpage_title" );
@@ -240,6 +241,7 @@ class Wp_EazyCV_Admin {
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobsearch_page_title" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_page" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_page_title" );
+		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_form" );
 
 	}
 
@@ -321,6 +323,7 @@ class Wp_EazyCV_Admin {
 		$pages = get_pages( $args );
 
 		?>
+
         <select type="text" class="eazycv-admin-select"
                 name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                 id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
@@ -332,6 +335,39 @@ class Wp_EazyCV_Admin {
 					echo 'selected';
 				} ?>
                         value="<?php echo $page->post_name ?>"><?php echo $page->post_title ?> (<?php echo $page->post_name ?>)
+                </option>
+
+			<?php } ?>
+        </select>
+		<?php
+	}
+
+
+	/**
+	 * @param $fields
+	 */
+	public function list_eazycv_forms( $fields ) {
+
+	    $forms = $this->eazyCvApi->get('connectivity/forms');
+
+	    if(empty($forms['data'])) {
+	        echo '<div class="alert">'.__('No forms available in EazyCV').'</div>';
+	        return;
+        }
+
+
+		?>
+        <select class="eazycv-admin-select"
+                name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+                id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+        >
+            <option value=""></option>
+			<?php
+			foreach ( $forms['data'] as $form ) { ?>
+                <option <?php if ( get_option( $this->option_name . "_" . $fields['field'] ) == $form['id'] ) {
+					echo 'selected';
+				} ?>
+                        value="<?php echo $form['id'] ?>"><?php echo $form['title'] ?>
                 </option>
 
 			<?php } ?>

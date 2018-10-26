@@ -21,11 +21,9 @@ flush_rewrite_rules();
 	$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 	$this->filter_wp_api_render_tabs();
 	?>
-	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder columns-2">
-
 			<div id="postbox-container-2" class="postbox-container">
 				<?php
 				switch ($tab) {

@@ -1,8 +1,8 @@
 <div id="normal-sortables" class="meta-box-sortables ui-sortable">
 	<div id="itsec_sss" class="postbox ">
-		<h3 class="hndle"><span>Welcome!</span></h3>
+		<h3 class="hndle"><span><?php echo  __('Job and applications')?></span></h3>
 		<div class="inside">
-			<p>Welkom, stel hier uw Jobs shit gegevens in.</p>
+			<p><?php echo __('Configure your job and apply options')?></p>
 		</div>
 	</div>
 </div>
