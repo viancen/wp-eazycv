@@ -290,7 +290,7 @@ class Wp_EazyCV_Public {
 			//
 			return 'EazyCV not connected';
 		} else {
-			$emolJobView = new Wp_EazyCV_Job_Search( $this->api );
+			$emolJobView = new Wp_EazyCV_Job_Search( $this->api ,  $atts);
 
 			return $emolJobView->render();
 		}
