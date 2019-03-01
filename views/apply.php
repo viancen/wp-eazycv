@@ -16,13 +16,13 @@ class Wp_EazyCV_Apply {
 
 		if(isset($_GET['applyform'])){
 			$mainForm = intval($_GET['applyform']);
-		} else {
+		}
+		if(empty($mainForm)){
 			$mainForm = get_option( 'wp_eazycv_apply_form' );
-		};
-
+		}
 		//first get the form
 		if ( empty( $mainForm ) ) {
-			dump( 'Applyform EazyCV is not set' );
+			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 		$formSettings = $this->api->get( 'connectivity/public-forms/' . $mainForm );
 		if ( empty( $formSettings['settings'] ) ) {

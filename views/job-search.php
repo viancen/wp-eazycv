@@ -18,7 +18,7 @@ class Wp_EazyCV_Job_Search {
 		} else {
 			$not_default_form = true;
 		}
-		if ( empty( $this->atts['apply_form'] ) ) {
+		if ($not_default_form == true && empty( $this->atts['apply_form'] ) ) {
 			return '<div class="eazy-error">' . __( 'Er is (nog) geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
