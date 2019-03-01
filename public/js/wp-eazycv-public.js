@@ -32,15 +32,16 @@
 
     if ($('#eazycv-greval').length) {
 
+
+    }
+    $(document).on('click', '#eazy-apply-submit-btn', function () {
         grecaptcha.ready(function () {
             grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
                 function (token) {
-                    $('#eazycv-greval').val(token);
                     console.log(token);
+                    $('#eazycv-greval').val(token);
+                    $('#eazycv-apply-form').submit();
                 });
         });
-    }
-    $(document).on('click', '#eazy-apply-submit-btn', function () {
-        //$('#eazycv-apply-form').submit();
     });
 })(jQuery);

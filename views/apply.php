@@ -93,7 +93,7 @@ class Wp_EazyCV_Apply {
 			}
 		}
 
-		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="submit" value="' . __( 'Submit' ) . '">';
+		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __( 'Submit' ) . '">';
 
 		$html .= '</form></div>';
 		return $html;
@@ -428,6 +428,7 @@ class Wp_EazyCV_Apply {
 		unset( $postData['files'] );
 
 		try {
+
 			$res = $this->api->post( 'candidates/signup', $postData );
 
 		} catch ( Exception $exception ) {
