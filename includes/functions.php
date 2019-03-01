@@ -16,9 +16,23 @@ if ( ! function_exists( 'dd' ) ) {
 if ( ! function_exists( 'dump' ) ) {
 	function dump( $anything ) {
 		echo "<pre>";
-		print_r($anything);
+		print_r( $anything );
 		echo '</pre>';
 	}
 
 }
+if ( ! function_exists( 'current_location' ) ) {
 
+	function current_location() {
+		if ( isset( $_SERVER['HTTPS'] ) &&
+		     ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 ) ||
+		     isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) &&
+		     $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) {
+			$protocol = 'https://';
+		} else {
+			$protocol = 'http://';
+		}
+
+		return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	}
+}

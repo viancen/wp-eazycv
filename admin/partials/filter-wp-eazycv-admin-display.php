@@ -30,6 +30,12 @@ flush_rewrite_rules();
 					case 'jobs':
 					    include(dirname(__FILE__).'/jobs.php');
 						break;
+					case 'styling':
+					    include(dirname(__FILE__).'/styling.php');
+						break;
+					case 'scripting':
+					    include(dirname(__FILE__).'/scripting.php');
+						break;
 					// If no tab or general
 					default:
 						include(dirname(__FILE__).'/general.php');

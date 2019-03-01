@@ -120,8 +120,8 @@ class Wp_EazyCV_Public {
 		if ( ! empty( $pagename ) ) {
 
 			$this->eazycvPage = 'apply';
-			$jobId = explode( '-', $pagename );
-			$jobId = array_pop( $jobId );
+			$jobId            = explode( '-', $pagename );
+			$jobId            = array_pop( $jobId );
 
 			if ( intval( $jobId ) ) {
 				$this->job = $this->api->get( 'jobs/published/' . $jobId );
@@ -137,12 +137,12 @@ class Wp_EazyCV_Public {
 	 */
 	public function change_page_title( $baseOption = null ) {
 
-		if ( !empty( $baseOption ) ) {
+		if ( ! empty( $baseOption ) ) {
 			$getTitle = get_option( $baseOption );
 		} else {
-			if($this->eazycvPage == 'job'){
+			if ( $this->eazycvPage == 'job' ) {
 				$getTitle = get_option( 'wp_eazycv_jobpage_title' );
-			} elseif($this->eazycvPage == 'apply'){
+			} elseif ( $this->eazycvPage == 'apply' ) {
 				$getTitle = get_option( 'wp_eazycv_apply_page_title' );
 			}
 		}
@@ -249,7 +249,10 @@ class Wp_EazyCV_Public {
 		 */
 
 		wp_enqueue_style( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'css/wp-eazycv-public.css', array(), $this->version, 'all' );
-
+		$customCss = get_option( 'wp_eazycv_styling' );
+		if ( ! empty( $customCss ) ) {
+			wp_add_inline_style( $this->wp_eazycv, $customCss );
+		}
 	}
 
 	/**
@@ -345,7 +348,10 @@ class Wp_EazyCV_Public {
 		 */
 
 		wp_enqueue_script( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-public.js', array( 'jquery' ), $this->version, false );
-
+		$customScript = get_option( 'wp_eazycv_scripting' );
+		if ( ! empty( $customScript ) ) {
+			wp_add_inline_script( $this->wp_eazycv, $customScript );
+		}
 	}
 
 }

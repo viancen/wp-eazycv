@@ -53,7 +53,7 @@ class Wp_EazyCV_Admin {
 
 	public $eazyCvApi = null;
 	public $eazyCvLicence = null;
-	public $eazyCvException= null;
+	public $eazyCvException = null;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -70,6 +70,8 @@ class Wp_EazyCV_Admin {
 
 		$this->plugin_settings_tabs['general'] = 'General';
 		$this->plugin_settings_tabs['jobs']    = 'Jobs';
+		$this->plugin_settings_tabs['styling'] = 'Styling';
+		$this->plugin_settings_tabs['scripting'] = 'Scripting';
 
 		//check connection
 		$optionKey      = get_option( 'wp_eazycv_apikey' );
@@ -80,7 +82,7 @@ class Wp_EazyCV_Admin {
 			try {
 				$this->eazyCvLicence = $this->eazyCvApi->get( 'licence' );
 			} catch ( Exception $wEx ) {
-			    $this->eazyCvException = $wEx->getMessage();
+				$this->eazyCvException = $wEx->getMessage();
 			}
 		}
 
@@ -246,6 +248,26 @@ class Wp_EazyCV_Admin {
 	}
 
 
+	private function register_styling_options() {
+
+		add_settings_section( $this->plugin_name . "-styling", null, null, $this->plugin_name . "-styling-options" );
+		add_settings_field( $this->option_name . "_styling", __( "Styling" ), array( $this, "display_styling_element" ), $this->plugin_name . "-styling-options", $this->plugin_name . "-styling", array( 'field' => 'styling' ) );
+
+		register_setting( $this->plugin_name . "-styling", $this->option_name . "_styling" );
+
+	}
+
+
+	private function register_scripting_options() {
+
+		add_settings_section( $this->plugin_name . "-scripting", null, null, $this->plugin_name . "-scripting-options" );
+		add_settings_field( $this->option_name . "scripting", __( "Scripting" ), array( $this, "display_styling_element" ), $this->plugin_name . "-scripting-options", $this->plugin_name . "-scripting", array( 'field' => 'scripting' ) );
+
+		register_setting( $this->plugin_name . "-scripting", $this->option_name . "_scripting" );
+
+	}
+
+
 	private function register_general_options() {
 		//section name, display name, callback to print description of section, page to which section is attached.
 		add_settings_section( $this->plugin_name . "-general_section", null, null, $this->plugin_name . "-general-options" );
@@ -269,6 +291,8 @@ class Wp_EazyCV_Admin {
 
 		$this->register_general_options();
 		$this->register_job_options();
+		$this->register_styling_options();
+		$this->register_scripting_options();
 
 	}
 
@@ -294,6 +318,31 @@ class Wp_EazyCV_Admin {
                name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                value="<?php echo get_option( $this->option_name . "_" . $fields['field'] ); ?>"/>
+		<?php
+	}
+
+
+	/**
+	 * @param $fields
+	 */
+	public function display_styling_element( $fields ) {
+		//id and name of form element should be same as the setting name.
+		?>
+        <textarea type="text" class="eazycv-admin-input" style="height:600px;font-family: Courier;line-height:1.5em;"
+                  name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+                  id="<?php echo $this->option_name . "_" . $fields['field']; ?>"><?php echo get_option( $this->option_name . "_" . $fields['field'] ); ?></textarea>
+		<?php
+	}
+
+	/**
+	 * @param $fields
+	 */
+	public function display_textarea_element( $fields ) {
+		//id and name of form element should be same as the setting name.
+		?>
+        <textarea type="text" class="eazycv-admin-input"
+                  name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+                  id="<?php echo $this->option_name . "_" . $fields['field']; ?>"><?php echo get_option( $this->option_name . "_" . $fields['field'] ); ?></textarea>
 		<?php
 	}
 
@@ -348,12 +397,13 @@ class Wp_EazyCV_Admin {
 	 */
 	public function list_eazycv_forms( $fields ) {
 
-	    $forms = $this->eazyCvApi->get('connectivity/forms');
+		$forms = $this->eazyCvApi->get( 'connectivity/forms' );
 
-	    if(empty($forms['data'])) {
-	        echo '<div class="alert">'.__('No forms available in EazyCV').'</div>';
-	        return;
-        }
+		if ( empty( $forms['data'] ) ) {
+			echo '<div class="alert">' . __( 'No forms available in EazyCV' ) . '</div>';
+
+			return;
+		}
 
 
 		?>

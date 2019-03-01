@@ -2,3 +2,30 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+.eazy-info, .eazy-success, .eazy-warning, .eazy-error {
+    margin: 10px 0px;
+    padding:12px;
+
+}
+.eazy-info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.eazy-success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.eazy-warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.eazy-error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}
+.eazy-info i, .eazy-success i, .eazy-warning i, .eazy-error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}
