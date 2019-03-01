@@ -236,6 +236,8 @@ class Wp_EazyCV_Admin {
 		add_settings_field( $this->option_name . "_apply_page", __( "Apply Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page' ) );
 		add_settings_field( $this->option_name . "_apply_page_title", __( "Apply PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page_title' ) );
 		add_settings_field( $this->option_name . "_apply_form", __( "Apply Form settings" ), array( $this, "list_eazycv_forms" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_form' ) );
+		add_settings_field( $this->option_name . "_google_api_key", __( "Google Invisible Captcha-Key" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'google_api_key' ) );
+		add_settings_field( $this->option_name . "_google_api_secret", __( "Google Invisible Captcha-Secret" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'google_api_secret' ) );
 
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobpage" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_jobpage_title" );
@@ -244,6 +246,8 @@ class Wp_EazyCV_Admin {
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_page" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_page_title" );
 		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_apply_form" );
+		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_google_api_key" );
+		register_setting( $this->plugin_name . "-job_section", $this->option_name . "_google_api_secret" );
 
 	}
 

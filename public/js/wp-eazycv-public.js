@@ -29,7 +29,18 @@
      * practising this, we should strive to set a better example in our own work.
      */
 
+
+    if ($('#eazycv-greval').length) {
+
+        grecaptcha.ready(function () {
+            grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
+                function (token) {
+                    $('#eazycv-greval').val(token);
+                    console.log(token);
+                });
+        });
+    }
     $(document).on('click', '#eazy-apply-submit-btn', function () {
-        $('#eazycv-apply-form').submit();
+        //$('#eazycv-apply-form').submit();
     });
 })(jQuery);

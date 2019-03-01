@@ -14,11 +14,17 @@ class Wp_EazyCV_Apply {
 
 	public function render() {
 
-		if(isset($_GET['applyform'])){
-			$mainForm = intval($_GET['applyform']);
+		if ( isset( $_GET['applyform'] ) ) {
+			$mainForm = intval( $_GET['applyform'] );
 		}
-		if(empty($mainForm)){
+		if ( empty( $mainForm ) ) {
 			$mainForm = get_option( 'wp_eazycv_apply_form' );
+		}
+
+		$googleKey    = get_option( 'wp_eazycv_google_api_key' );
+		$googleSecret = get_option( 'wp_eazycv_google_api_secret' );
+		if ( empty( $googleKey ) || empty( $googleSecret ) ) {
+			return '<div class="eazy-error">' . __( 'Er is geen CAPTCHA ingesteld.' ) . '</div>';
 		}
 		//first get the form
 		if ( empty( $mainForm ) ) {
@@ -44,8 +50,10 @@ class Wp_EazyCV_Apply {
 				$url = current_location() . '?success=false';
 
 				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, neem contact op met ons.' ) . '</div>';
+			} elseif( $success == 'Error-Captcha' ) {
+				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, ben je een robot?' ) . '</div>';
 			} else {
-				return '<div class="eazy-success">' . $form['success_message'] . '</div>';
+				return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
 			}
 		}
 
@@ -60,8 +68,11 @@ class Wp_EazyCV_Apply {
 
 		}
 		$html .= '<div class="eazycv-form">
+<input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
 		<form method="post" id="eazycv-apply-form" enctype="multipart/form-data">
-  			<input type="hidden" name="job_id" value="'.$this->job['id'].'">';
+  			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
+  			<input type="hidden" name="job_id" value="' . $this->job['id'] . '">
+  			';
 
 		foreach ( $formSettings['fields'] as $field ) {
 
@@ -82,10 +93,9 @@ class Wp_EazyCV_Apply {
 			}
 		}
 
-		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __( 'Submit' ) . '">';
+		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="submit" value="' . __( 'Submit' ) . '">';
 
 		$html .= '</form></div>';
-
 		return $html;
 	}
 
@@ -269,9 +279,21 @@ class Wp_EazyCV_Apply {
 	}
 
 
+	/*
+	 * ggreat magic
+	 */
 	private function performApply( $postData ) {
 
 
+		if ( ! isset( $postData['grepact'] ) ) {
+			return 'Error';
+		}
+
+		$response = file_get_contents( 'https://www.google.com/recaptcha/api/siteverify?secret=' . get_option( 'wp_eazycv_google_api_secret' ) . '&response=' . $postData['grepact'] . '&remoteip=' . $_SERVER['REMOTE_ADDR'] );
+		$resp     = json_decode( $response );
+		if ( ! $resp->success ) {
+			return 'Error-Captcha';
+		}
 		if ( isset( $postData['files']['cv_document'] ) ) {
 
 			$file = $postData['files']['cv_document'];

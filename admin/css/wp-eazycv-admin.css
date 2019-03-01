@@ -15,3 +15,13 @@
 .eazy-text-muted {
     color:grey;
 }
+#wp_eazycv_apply_page,
+#wp_eazycv_jobsearch_page{
+    border-top:solid 1px green;
+}
+#wp_eazycv_google_api_key{
+    border-top:solid 1px red;
+}
+#wp_eazycv_google_api_secret{
+    border-top:solid 1px red;
+}
