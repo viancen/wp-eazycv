@@ -4,7 +4,6 @@
 		<div class="inside">
 			<p>
                 Welkom, stel hier uw API credentials in.
-
             </p>
 		</div>
 	</div>
@@ -16,7 +15,16 @@
 } else {
 	?>
     <p class="notice notice-success is-dismissible"><Br />
-       <strong><?php echo __('Your site is now connected to EazyCV!') ?></strong><br /><br /></p>
+       <strong><?php echo __('Your site is now connected to EazyCV!') ?></strong><br /><br />
+    <?php $licence = $this->eazyCvApi->get('licence'); ?>
+       <strong><?php echo __('Licentie') ?></strong><Br >
+        <?php echo $licence['data']['customer']['name']?>
+        <br><br>
+        <strong><?php echo __('E-mail') ?></strong><Br >
+        <?php echo $licence['data']['customer']['email']?>
+        <br><br>
+
+    </p>
 	<?php
 } ?>
 <form method="post" action="options.php" class="">

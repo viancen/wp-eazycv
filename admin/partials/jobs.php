@@ -9,11 +9,13 @@
                     <td><strong>Page</strong></td>
                     <td></td>
                     <td><strong>Shortcode</strong></td>
+                    <td><em>Help</em></td>
                 </tr>
                 <tr>
                     <td>Jobpage</td>
                     <td>:</td>
                     <td>[eazycv_job]</td>
+                    <td class="eazy-text-muted">Teplate for title example: "Vacature *|original_functiontitle|*"</td>
                 </tr>
                 <tr>
                     <td>Job search-page</td>

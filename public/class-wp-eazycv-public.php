@@ -49,6 +49,7 @@ class Wp_EazyCV_Public {
 	 */
 	public $api = null;
 	public $job = null;
+	public $eazycvPage = null;
 	public $eazyCvLicence = null;
 
 	/**
@@ -100,13 +101,14 @@ class Wp_EazyCV_Public {
 		//sets meta data and pre thingies before rendering the shortcodes on our pages
 		$pagename = get_query_var( 'JobID' );
 		if ( ! empty( $pagename ) ) {
+
+			$this->eazycvPage = 'job';
+
 			$jobId = explode( '-', $pagename );
 			$jobId = array_pop( $jobId );
 
 			if ( intval( $jobId ) ) {
-
 				$this->job = $this->api->get( 'jobs/published/' . $jobId );
-
 				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50, 1 );
 				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
 
@@ -116,30 +118,35 @@ class Wp_EazyCV_Public {
 		//sets meta data and pre thingies before rendering the shortcodes on our pages
 		$pagename = get_query_var( 'EazyApplyTo' );
 		if ( ! empty( $pagename ) ) {
+
+			$this->eazycvPage = 'apply';
 			$jobId = explode( '-', $pagename );
 			$jobId = array_pop( $jobId );
 
 			if ( intval( $jobId ) ) {
-
 				$this->job = $this->api->get( 'jobs/published/' . $jobId );
-
-
 				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50, 1 );
 				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
-
 			}
 		}
+
 	}
 
 	/**
 	 * @return mixed
 	 */
 	public function change_page_title( $baseOption = null ) {
-		if ( empty( $baseOption ) ) {
-			$getTitle = get_option( 'wp_eazycv_jobpage_title' );
-		} else {
+
+		if ( !empty( $baseOption ) ) {
 			$getTitle = get_option( $baseOption );
+		} else {
+			if($this->eazycvPage == 'job'){
+				$getTitle = get_option( 'wp_eazycv_jobpage_title' );
+			} elseif($this->eazycvPage == 'apply'){
+				$getTitle = get_option( 'wp_eazycv_apply_page_title' );
+			}
 		}
+
 		if ( ! empty( $getTitle ) ) {
 			foreach ( $this->job as $key => $val ) {
 				if ( is_string( $val ) ) {
@@ -152,6 +159,7 @@ class Wp_EazyCV_Public {
 					}
 				}
 			}
+
 		} else {
 			$getTitle = $this->job['functiontitle'];
 		}

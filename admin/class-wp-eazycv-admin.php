@@ -227,10 +227,10 @@ class Wp_EazyCV_Admin {
 	private function register_job_options() {
 
 		add_settings_section( $this->plugin_name . "-job_section", null, null, $this->plugin_name . "-job-options" );
+		add_settings_field( $this->option_name . "_jobsearch_page", __( "Job Search Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page' ) );
+
 		add_settings_field( $this->option_name . "_jobpage", __( "Job Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage' ) );
 		add_settings_field( $this->option_name . "_jobpage_title", __( "Job PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage_title' ) );
-		add_settings_field( $this->option_name . "_jobsearch_page", __( "Job Search Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page' ) );
-		add_settings_field( $this->option_name . "_jobsearch_page_title", __( "Job Search Title" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobsearch_page_title' ) );
 		add_settings_field( $this->option_name . "_apply_page", __( "Apply Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page' ) );
 		add_settings_field( $this->option_name . "_apply_page_title", __( "Apply PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page_title' ) );
 		add_settings_field( $this->option_name . "_apply_form", __( "Apply Form settings" ), array( $this, "list_eazycv_forms" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_form' ) );
