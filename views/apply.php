@@ -50,7 +50,7 @@ class Wp_EazyCV_Apply {
 				$url = current_location() . '?success=false';
 
 				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, neem contact op met ons.' ) . '</div>';
-			} elseif( $success == 'Error-Captcha' ) {
+			} elseif ( $success == 'Error-Captcha' ) {
 				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, ben je een robot?' ) . '</div>';
 			} else {
 				return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
@@ -60,6 +60,7 @@ class Wp_EazyCV_Apply {
 		//otherwise render the applicaiton form
 		$this->lists   = $this->api->get( 'lists' );
 		$this->licence = $this->api->get( 'licence' );
+		$legal_stuff   = $this->api->get( 'legal-info' );
 
 		if ( ! empty( $this->job ) ) {
 			$html = '<h2>' . $this->job['functiontitle'] . '</h2>';
@@ -93,9 +94,40 @@ class Wp_EazyCV_Apply {
 			}
 		}
 
+
+		if ( ! empty( $legal_stuff['gdpr_candidate']['content'] ) ) {
+
+			$html .= '<p class="eazycv-gdpr">
+                    <label for="field-gdpr">
+                        <input type="checkbox" id="eazycv-field-gdpr" aria-required="true" required class="required validate"
+                               name="accept_gdpr_version"
+                               value="' . $legal_stuff['gdpr_candidate']['version_nr'] . '"/>
+                             
+                        <a href="javascript:;" id="eazycv-gdpr-link"> ' . __( 'Ik ga akkoord met de privacy voowaarden' ) . '</a>
+                    </label>
+                </p>';
+
+			$html .= '<!-- The Modal -->
+				<div id="eazycv-gdpr-modal" class="eazycv-modal">
+					<div class="eazycv-modal-content">
+					  <div class="eazycv-modal-header">
+					    <span class="eazycv-close">&times;</span>
+					    <h2>' . __( 'Privacy voorwaarden' ) . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
+					  </div>
+					  <div class="eazycv-modal-body">
+					     <p>' . $legal_stuff['gdpr_candidate']['content'] . '</p>
+					  </div>
+					  <div class="eazycv-modal-footer">
+					    <h3><button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __( 'Ik ga akkoord' ) . '</button> </h3>
+					  </div>
+					</div> 
+				</div>';
+		}
+
 		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __( 'Submit' ) . '">';
 
 		$html .= '</form></div>';
+
 		return $html;
 	}
 
@@ -291,9 +323,11 @@ class Wp_EazyCV_Apply {
 
 		$response = file_get_contents( 'https://www.google.com/recaptcha/api/siteverify?secret=' . get_option( 'wp_eazycv_google_api_secret' ) . '&response=' . $postData['grepact'] . '&remoteip=' . $_SERVER['REMOTE_ADDR'] );
 		$resp     = json_decode( $response );
+
 		if ( ! $resp->success ) {
 			return 'Error-Captcha';
 		}
+
 		if ( isset( $postData['files']['cv_document'] ) ) {
 
 			$file = $postData['files']['cv_document'];
@@ -330,7 +364,7 @@ class Wp_EazyCV_Apply {
 			}
 
 			unset( $postData['files']['cv_document'] );
-			$postData['run_textkernel'] = false;
+			$postData['useTextkernel'] = false;
 		}
 
 		if ( isset( $postData['files']['cv_document_tk'] ) ) {
@@ -369,7 +403,7 @@ class Wp_EazyCV_Apply {
 			}
 
 			unset( $postData['files']['cv_document_tk'] );
-			$postData['run_textkernel'] = true;
+			$postData['useTextkernel'] = true;
 		}
 
 		if ( isset( $postData['files']['avatar'] ) ) {
