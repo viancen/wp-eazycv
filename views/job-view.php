@@ -11,7 +11,6 @@ class Wp_EazyCV_Job {
 	}
 
 	public function render() {
-
 		//ander inschrijfjformulier meegegeven?
 		$mainForm = '';
 		if ( isset( $_GET['applyform'] ) ) {
@@ -20,10 +19,8 @@ class Wp_EazyCV_Job {
 
 		$html = '<h2>' . $this->job['functiontitle'] . '</h2>';
 		foreach ( $this->job['texts'] as $text ) {
-
 			$html .= '<h3>' . $text['heading_label'] . '</h3>';
 			$html .= '<p>' . $text['content'] . '</p>';
-
 		}
 
 		if ( ! empty( $this->job ) ) {

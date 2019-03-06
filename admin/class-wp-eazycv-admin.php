@@ -370,8 +370,7 @@ class Wp_EazyCV_Admin {
 			'exclude_tree' => '',
 			'number'       => '',
 			'offset'       => 0,
-			'post_type'    => 'page',
-			'post_status'  => 'publish'
+			'post_type'    => 'page'
 		);
 		$pages = get_pages( $args );
 
