@@ -78,8 +78,9 @@ class Wp_EazyCV_Apply {
 
 		}
 		$html .= '<div class="eazycv-form">
+<div class="eazy-error" id="eazy-from-apply-error" style="display:none;"></div>
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
-		<form method="post" id="eazycv-apply-form" enctype="multipart/form-data">
+		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
   			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
   			<input type="hidden" name="job_id" value="' . $this->job['id'] . '">
   			';
@@ -337,7 +338,7 @@ class Wp_EazyCV_Apply {
 			return 'Error-Captcha';
 		}
 
-		if ( isset( $postData['files']['cv_document'] ) ) {
+		if ( isset( $postData['files']['cv_document'] ) && !empty($postData['files']['cv_document']['tmp_name'])) {
 
 			$file = $postData['files']['cv_document'];
 
@@ -376,7 +377,7 @@ class Wp_EazyCV_Apply {
 			$postData['useTextkernel'] = false;
 		}
 
-		if ( isset( $postData['files']['cv_document_tk'] ) ) {
+		if ( isset( $postData['files']['cv_document_tk'] ) && !empty($postData['files']['cv_document_tk']['tmp_name'])) {
 
 			$file = $postData['files']['cv_document_tk'];
 

@@ -29,7 +29,7 @@
      * practising this, we should strive to set a better example in our own work.
      */
 
-    // Get the modal
+        // Get the modal
     var modal = document.getElementById('eazycv-gdpr-modal');
 
     if (modal) {
@@ -59,16 +59,25 @@
 
 
     $(document).on('click', '#eazy-apply-submit-btn', function () {
-        grecaptcha.ready(function () {
-            grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
-                function (token) {
-                    console.log(token);
-                    $('#eazycv-greval').val(token);
-                    $('#eazycv-apply-form').submit();
-                });
-        });
-    }).on('click','#accept-gdpr-modal-btn',function(){
-        $('#eazycv-field-gdpr').prop('checked',true);
+
+        //todo: validation if none on default wordpress settings
+        if (!$('#eazycv-field-email').val()) {
+            $('#eazy-from-apply-error').html('E-mailadres is verplicht');
+            $('#eazy-from-apply-error').css('display','block');
+        } else {
+            $('#eazy-apply-submit-btn').attr('disabled', true);
+            grecaptcha.ready(function () {
+                grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
+                    function (token) {
+                        $('#eazy-apply-submit-btn').prop('disabled', true);
+                        console.log(token);
+                        $('#eazycv-greval').val(token);
+                        $('#eazycv-apply-form').submit();
+                    });
+            });
+        }
+    }).on('click', '#accept-gdpr-modal-btn', function () {
+        $('#eazycv-field-gdpr').prop('checked', true);
         var modal = document.getElementById('eazycv-gdpr-modal');
         modal.style.display = "none";
     });
