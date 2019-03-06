@@ -13,25 +13,40 @@ class Wp_EazyCV_Job_Search {
 
 	public function render() {
 		$not_default_form = false;
+
+
 		if ( empty( $this->atts['apply_form'] ) ) {
 			$this->atts['apply_form'] = get_option( 'wp_eazycv_apply_form' );
 		} else {
 			$not_default_form = true;
 		}
-		if ($not_default_form == true && empty( $this->atts['apply_form'] ) ) {
+		$filters = [
+			'channels' => [
+				$this->atts['apply_form']
+			]
+		];
+
+		if (!empty( $this->atts['job_type'] ) ) {
+			$filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
+		}
+
+		if ( $not_default_form == true && empty( $this->atts['apply_form'] ) ) {
 			return '<div class="eazy-error">' . __( 'Er is (nog) geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
-		$jobs = $this->api->get( 'jobs/published' );
+		$jobs = $this->api->get( 'jobs/published', [
+			'filter' => $filters
+		] );
+
 		$html = '';
 		foreach ( $jobs['data'] as $job ) {
 
 			if ( $not_default_form ) {
-				$url = get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['apply_form'];
+				$url       = get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['apply_form'];
 				$url_apply = get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['apply_form'];
 			} else {
 				$url_apply = get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'];
-				$url = get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'];
+				$url       = get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'];
 			}
 
 			$html .= '<div class="eazycv-job-row">';

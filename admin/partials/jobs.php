@@ -12,15 +12,16 @@
                     <td><em>Help</em></td>
                 </tr>
                 <tr>
-                    <td>Jobpage</td>
-                    <td>:</td>
-                    <td>[eazycv_job]</td>
-                    <td class="eazy-text-muted">Teplate for title example: "Vacature *|original_functiontitle|*"</td>
-                </tr>
-                <tr>
-                    <td>Job search-page</td>
+                    <td>Jobs overview-page</td>
                     <td>:</td>
                     <td>[eazycv_job_search]</td>
+                    <td class="eazy-text-muted">Optionally you can pass a different portalId or type: [eazycv_job_search apply_form="312" job_type="project"]</td>
+                </tr>
+                <tr>
+                    <td>Job-detailspage</td>
+                    <td>:</td>
+                    <td>[eazycv_job]</td>
+                    <td class="eazy-text-muted">Template for pagetitle example: "Vacature *|original_functiontitle|*"</td>
                 </tr>
                 <tr>
                     <td>Job apply-page</td>
