@@ -42,15 +42,15 @@ class Wp_EazyCV_Job_Search {
 		foreach ( $jobs['data'] as $job ) {
 
 			if ( $not_default_form ) {
-				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
-				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
+				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
+				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
 			} else {
-				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'];
-				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['functiontitle'] ) . '-' . $job['id'];
+				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
+				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
 			}
 
 			$html .= '<div class="eazycv-job-row">';
-			$html .= '<h4><a href="' . $url . '">' . $job['functiontitle'] . '</a></h4>';
+			$html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
 			if ( isset( $job['texts']['meta']['content'] ) ) {
 				$html .= '<p>' . $job['texts']['meta']['content'] . '</p>';
 			} else if ( isset( $job['texts']['summary']['content'] ) ) {

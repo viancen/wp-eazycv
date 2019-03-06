@@ -161,7 +161,7 @@ class Wp_EazyCV_Public {
 			}
 
 		} else {
-			$getTitle = $this->job['functiontitle'];
+			$getTitle = $this->job['original_functiontitle'];
 		}
 
 		return $getTitle;

@@ -11,6 +11,7 @@ class Wp_EazyCV_Job {
 	}
 
 	public function render() {
+
 		//ander inschrijfjformulier meegegeven?
 		$mainForm = '';
 		if ( isset( $_GET['applyform'] ) ) {
@@ -18,11 +19,12 @@ class Wp_EazyCV_Job {
 		}
 
 		$html = '<div class="eazycv-job-body eazycv-job-' . $this->job['type'] . '">';
-		$html .= '<h2 class="eazycv-job-view-h2">' . $this->job['functiontitle'] . '</h2>';
-		foreach ( $this->job['texts'] as $text ) {
+		$html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
+
+		foreach ( $this->job['texts'] as $kk => $text ) {
 			if ( ! empty( trim( strip_tags( $text['content'] ) ) ) ) {
-				$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $text['heading_label'] ) . '">' . $text['heading_label'] . '</h3>';
-				$html .= '<p class="eazycv-job-view-paragraph">' . $text['content'] . '</p>';
+				$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $kk ) . '">' . $text['heading_label'] . '</h3>';
+				$html .= '<p class="eazycv-job-view-paragraph eazycv-job-paragraph-' . sanitize_title( $kk ) . '">' . $text['content'] . '</p>';
 			}
 		}
 
