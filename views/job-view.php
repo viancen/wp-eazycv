@@ -25,11 +25,11 @@ class Wp_EazyCV_Job {
 			$html .= '<p>' . $text['content'] . '</p>';
 
 		}
-		if ( ! empty( $this->job ) ) {
 
-			$html .= '<a href="/' . get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $this->job['functiontitle'] ) . '-' . $this->job['id'] . $mainForm . '">' . __( 'Apply To Job' ) . '</a>';
+		if ( ! empty( $this->job ) ) {
+			$html .= '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $this->job['functiontitle'] ) . '-' . $this->job['id'] . $mainForm . '">' . __( 'Solliciteren' ) . '</a>';
 		} else {
-			$html .= '<a href="/' . get_option( 'wp_eazycv_apply_page' ) . '/open' . $mainForm . '">' . __( 'Apply To Job' ) . '</a>';
+			$html .= '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/open' . $mainForm . '">' . __( 'Solliciteren' ) . '</a>';
 		}
 
 		return $html;

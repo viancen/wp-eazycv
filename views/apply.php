@@ -7,29 +7,38 @@ class Wp_EazyCV_Apply {
 	private $lists = null;
 	private $licence = null;
 
-	function __construct( $api, $job = null ) {
-		$this->api = $api;
-		$this->job = $job;
+	function __construct( $api, $atts, $job = null ) {
+		$this->atts = $atts;
+		$this->api  = $api;
+		$this->job  = $job;
 	}
 
 	public function render() {
 
+		$mainForm=null;
 		if ( isset( $_GET['applyform'] ) ) {
 			$mainForm = intval( $_GET['applyform'] );
 		}
-		if ( empty( $mainForm ) ) {
-			$mainForm = get_option( 'wp_eazycv_apply_form' );
+
+		if (empty($mainForm) && ! empty( $this->atts['portal_id'] ) ) {
+			$mainForm = intval( $this->atts['portal_id'] );
 		}
 
-		$googleKey    = get_option( 'wp_eazycv_google_api_key' );
-		$googleSecret = get_option( 'wp_eazycv_google_api_secret' );
-		if ( empty( $googleKey ) || empty( $googleSecret ) ) {
-			return '<div class="eazy-error">' . __( 'Er is geen CAPTCHA ingesteld.' ) . '</div>';
+		if ( empty( $mainForm ) ) {
+			$mainForm = get_option( 'wp_eazycv_apply_form' );
 		}
 		//first get the form
 		if ( empty( $mainForm ) ) {
 			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
+
+		$googleKey    = get_option( 'wp_eazycv_google_api_key' );
+		$googleSecret = get_option( 'wp_eazycv_google_api_secret' );
+
+		if ( empty( $googleKey ) || empty( $googleSecret ) ) {
+			return '<div class="eazy-error">' . __( 'Er is geen CAPTCHA ingesteld.' ) . '</div>';
+		}
+
 		$formSettings = $this->api->get( 'connectivity/public-forms/' . $mainForm );
 		if ( empty( $formSettings['settings'] ) ) {
 			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';

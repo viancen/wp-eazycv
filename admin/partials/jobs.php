@@ -2,7 +2,7 @@
     <div id="itsec_sss" class="postbox ">
         <h3 class="hndle"><span><?php echo __( 'Job and applications' ) ?></span></h3>
         <div class="inside">
-            <p><?php echo __( 'Configure your job and apply options, make sure the selected pages have the following shortcodes in them:' ) ?></p>
+            <p><?php echo __( 'Configure your default job and apply options, make sure the selected pages have the following shortcodes in them:' ) ?></p>
             <p>
             <table>
                 <tr>
@@ -15,7 +15,7 @@
                     <td>Jobs overview-page</td>
                     <td>:</td>
                     <td>[eazycv_job_search]</td>
-                    <td class="eazy-text-muted">Optionally you can pass a different portalId or type: [eazycv_job_search apply_form="312" job_type="project"]</td>
+                    <td class="eazy-text-muted">Optionally you can pass a different portalId or type: [eazycv_job_search portal_id="312" job_type="project"]</td>
                 </tr>
                 <tr>
                     <td>Job-detailspage</td>
@@ -27,6 +27,7 @@
                     <td>Job apply-page</td>
                     <td>:</td>
                     <td>[eazycv_apply]</td>
+                    <td class="eazy-text-muted">Optionally you can pass a different portalId : [eazycv_apply portal_id="312"]</td>
                 </tr>
             </table>
             </p>

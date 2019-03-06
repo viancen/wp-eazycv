@@ -291,7 +291,7 @@ class Wp_EazyCV_Public {
 			//
 			return 'EazyCV not connected';
 		} else {
-			$emolJobView = new Wp_EazyCV_Job_Search( $this->api ,  $atts);
+			$emolJobView = new Wp_EazyCV_Job_Search( $this->api, $atts );
 
 			return $emolJobView->render();
 		}
@@ -312,7 +312,7 @@ class Wp_EazyCV_Public {
 			//
 			return 'EazyCV not connected';
 		} else {
-			$emolJobView = new Wp_EazyCV_Apply( $this->api, $this->job );
+			$emolJobView = new Wp_EazyCV_Apply( $this->api, $atts, $this->job );
 
 			return $emolJobView->render();
 		}
@@ -347,9 +347,9 @@ class Wp_EazyCV_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js?render='.get_option('wp_eazycv_google_api_key') );
+		wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option( 'wp_eazycv_google_api_key' ) );
 
-		wp_enqueue_script( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-public.js', array( 'jquery' ), $this->version, true);
+		wp_enqueue_script( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-public.js', array( 'jquery' ), $this->version, true );
 		$customScript = get_option( 'wp_eazycv_scripting' );
 		if ( ! empty( $customScript ) ) {
 			wp_add_inline_script( $this->wp_eazycv, $customScript );
