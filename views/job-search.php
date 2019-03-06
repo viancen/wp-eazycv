@@ -12,25 +12,26 @@ class Wp_EazyCV_Job_Search {
 	}
 
 	public function render() {
+
 		$not_default_form = false;
-
-
 		if ( empty( $this->atts['portal_id'] ) ) {
-			$this->atts['portal_id'] = get_option( 'wp_eazycv_apply_form' );
+			$portalId = get_option( 'wp_eazycv_apply_form' );
 		} else {
+			$portalId         = $this->atts['portal_id'];
 			$not_default_form = true;
 		}
+
 		$filters = [
 			'channels' => [
-				$this->atts['portal_id']
+				$portalId
 			]
 		];
 
-		if (!empty( $this->atts['job_type'] ) ) {
+		if ( ! empty( $this->atts['job_type'] ) ) {
 			$filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
 		}
 
-		if ( $not_default_form == true && empty( $this->atts['portal_id'] ) ) {
+		if ( empty( $portalId ) ) {
 			return '<div class="eazy-error">' . __( 'Er is (nog) geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
@@ -41,12 +42,16 @@ class Wp_EazyCV_Job_Search {
 		$html = '';
 		foreach ( $jobs['data'] as $job ) {
 
+			if ( empty( $job['original_functiontitle'] ) ) {
+				$job['original_functiontitle'] = $job['functiontitle'];
+			}
+
 			if ( $not_default_form ) {
-				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
-				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
+				$url       = get_site_url() . '/' . get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
+				$url_apply = get_site_url() . '/' . get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'] . '?applyform=' . $this->atts['portal_id'];
 			} else {
-				$url_apply = get_site_url().'/'.get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
-				$url       = get_site_url().'/'.get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
+				$url_apply = get_site_url() . '/' . get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
+				$url       = get_site_url() . '/' . get_option( 'wp_eazycv_jobpage' ) . '/' . sanitize_title( $job['original_functiontitle'] ) . '-' . $job['id'];
 			}
 
 			$html .= '<div class="eazycv-job-row">';
