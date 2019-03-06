@@ -375,6 +375,7 @@ class Wp_EazyCV_Admin {
 		);
 		$pages = get_pages( $args );
 
+		//dd($pages);
 		?>
 
         <select type="text" class="eazycv-admin-select"

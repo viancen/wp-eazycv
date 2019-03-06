@@ -72,9 +72,9 @@ class Wp_EazyCV_Apply {
 		$legal_stuff   = $this->api->get( 'legal-info' );
 
 		if ( ! empty( $this->job ) ) {
-			$html = '<h2>' . $this->job['functiontitle'] . '</h2>';
+			$html = '<h2 class="eazycv-job-view-h2">' . $this->job['functiontitle'] . '</h2>';
 		} else {
-			$html = '<h2>' . __( 'Open Application' ) . '</h2>';
+			$html = '<h2 class="eazycv-job-view-h2">' . __( 'Open Application' ) . '</h2>';
 
 		}
 		$html .= '<div class="eazycv-form">
