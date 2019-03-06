@@ -15,6 +15,10 @@ class Wp_EazyCV_Apply {
 
 	public function render() {
 
+
+		///wp force
+		wp_enqueue_script( 'eazy_recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option( 'wp_eazycv_google_api_key' ), [], '19801203' );
+
 		$mainForm=null;
 		if ( isset( $_GET['applyform'] ) ) {
 			$mainForm = intval( $_GET['applyform'] );
