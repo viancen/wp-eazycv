@@ -80,6 +80,7 @@
             $('#eazycv-field-gdpr').prop('checked', true);
             var modal = document.getElementById('eazycv-gdpr-modal');
             modal.style.display = "none";
+
         });
     });
 })(jQuery);
