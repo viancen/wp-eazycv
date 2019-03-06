@@ -68,9 +68,9 @@ class Wp_EazyCV_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
-		$this->plugin_settings_tabs['general'] = 'General';
-		$this->plugin_settings_tabs['jobs']    = 'Jobs';
-		$this->plugin_settings_tabs['styling'] = 'Styling';
+		$this->plugin_settings_tabs['general']   = 'General';
+		$this->plugin_settings_tabs['jobs']      = 'Jobs';
+		$this->plugin_settings_tabs['styling']   = 'Styling';
 		$this->plugin_settings_tabs['scripting'] = 'Scripting';
 
 		//check connection
@@ -370,7 +370,8 @@ class Wp_EazyCV_Admin {
 			'exclude_tree' => '',
 			'number'       => '',
 			'offset'       => 0,
-			'post_type'    => 'page'
+			'post_type'    => 'page',
+			'post_status'  => 'publish,private,draft'
 		);
 		$pages = get_pages( $args );
 
