@@ -24,7 +24,13 @@
                     <td class="eazy-text-muted">Template for pagetitle example: "Vacature *|original_functiontitle|*"</td>
                 </tr>
                 <tr>
-                    <td>Job apply-page</td>
+                    <td>Project-detailspage</td>
+                    <td>:</td>
+                    <td>[eazycv_job]</td>
+                    <td class="eazy-text-muted">Template for pagetitle example: "Project *|original_functiontitle|*"</td>
+                </tr>
+                <tr>
+                    <td>Apply-page</td>
                     <td>:</td>
                     <td>[eazycv_apply]</td>
                     <td class="eazy-text-muted">Optionally you can pass a different portalId : [eazycv_apply portal_id="312"]</td>

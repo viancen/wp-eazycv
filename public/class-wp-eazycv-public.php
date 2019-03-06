@@ -115,6 +115,22 @@ class Wp_EazyCV_Public {
 			}
 		}
 
+		$pagename = get_query_var( 'ProjectID' );
+		if ( ! empty( $pagename ) ) {
+
+			$this->eazycvPage = 'project';
+
+			$jobId = explode( '-', $pagename );
+			$jobId = array_pop( $jobId );
+
+			if ( intval( $jobId ) ) {
+				$this->job = $this->api->get( 'jobs/published/' . $jobId );
+				add_filter( 'pre_get_document_title', array( $this, 'change_page_title' ), 50, 1 );
+				add_filter( 'wpseo_dmetadesc', array( $this, 'change_page_meta' ), 10, 1 );
+
+			}
+		}
+
 		//sets meta data and pre thingies before rendering the shortcodes on our pages
 		$pagename = get_query_var( 'EazyApplyTo' );
 		if ( ! empty( $pagename ) ) {
@@ -142,6 +158,8 @@ class Wp_EazyCV_Public {
 		} else {
 			if ( $this->eazycvPage == 'job' ) {
 				$getTitle = get_option( 'wp_eazycv_jobpage_title' );
+			} elseif ( $this->eazycvPage == 'project' ) {
+				$getTitle = get_option( 'wp_eazycv_projectpage_title' );
 			} elseif ( $this->eazycvPage == 'apply' ) {
 				$getTitle = get_option( 'wp_eazycv_apply_page_title' );
 			}
@@ -183,6 +201,7 @@ class Wp_EazyCV_Public {
 		function add_eazycv_vars( $vars ) {
 
 			$vars[] = 'JobID';
+			$vars[] = 'ProjectID';
 			$vars[] = 'EazyCVSearch';
 			$vars[] = 'EazyApplyTo';
 
@@ -197,6 +216,19 @@ class Wp_EazyCV_Public {
 				add_rewrite_rule(
 					'^' . get_option( 'wp_eazycv_jobpage' ) . '/([^/]*)/?',
 					'index.php?pagename=' . get_option( 'wp_eazycv_jobpage' ) . '&JobID=$matches[1]',
+					'top'
+				);
+			}
+		}
+
+		add_action( 'init', 'add_projectid_rule' );
+		function add_projectid_rule( $jobPage ) {
+			$jobPage = get_option( 'wp_eazycv_projectpage' );
+
+			if ( $jobPage ) {
+				add_rewrite_rule(
+					'^' . get_option( 'wp_eazycv_projectpage' ) . '/([^/]*)/?',
+					'index.php?pagename=' . get_option( 'wp_eazycv_projectpage' ) . '&ProjectID=$matches[1]',
 					'top'
 				);
 			}

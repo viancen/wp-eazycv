@@ -22,7 +22,6 @@ class Wp_EazyCV_Job {
 			$this->job['original_functiontitle'] = $this->job['functiontitle'];
 		}
 
-
 		$html = '<div class="eazycv-job-body eazycv-job-' . $this->job['type'] . '">';
 		$html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
 
