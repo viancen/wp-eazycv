@@ -3,9 +3,11 @@
 class Wp_EazyCV_Apply {
 
 	public $job = null;
+
 	private $api = null;
 	private $lists = null;
 	private $licence = null;
+	private $apply_form = null;
 
 	function __construct( $api, $atts, $job = null ) {
 		$this->atts = $atts;
@@ -19,12 +21,12 @@ class Wp_EazyCV_Apply {
 		///wp force
 		wp_enqueue_script( 'eazy_recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option( 'wp_eazycv_google_api_key' ), [], '19801203' );
 
-		$mainForm=null;
+		$mainForm = null;
 		if ( isset( $_GET['applyform'] ) ) {
 			$mainForm = intval( $_GET['applyform'] );
 		}
 
-		if (empty($mainForm) && ! empty( $this->atts['portal_id'] ) ) {
+		if ( empty( $mainForm ) && ! empty( $this->atts['portal_id'] ) ) {
 			$mainForm = intval( $this->atts['portal_id'] );
 		}
 
@@ -36,6 +38,8 @@ class Wp_EazyCV_Apply {
 			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
+		$this->apply_form = $mainForm;
+
 		$googleKey    = get_option( 'wp_eazycv_google_api_key' );
 		$googleSecret = get_option( 'wp_eazycv_google_api_secret' );
 
@@ -43,7 +47,11 @@ class Wp_EazyCV_Apply {
 			return '<div class="eazy-error">' . __( 'Er is geen CAPTCHA ingesteld.' ) . '</div>';
 		}
 
-		$formSettings = $this->api->get( 'connectivity/public-forms/' . $mainForm );
+		try {
+			$formSettings = $this->api->get( 'connectivity/public-forms/' . $mainForm );
+		} catch ( Exception $exception ) {
+			return '<div class="eazy-error">' . __( 'Er is een fout inschrijfformulier ingesteld.' ) . '</div>';
+		}
 		if ( empty( $formSettings['settings'] ) ) {
 			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
@@ -342,7 +350,7 @@ class Wp_EazyCV_Apply {
 			return 'Error-Captcha';
 		}
 
-		if ( isset( $postData['files']['cv_document'] ) && !empty($postData['files']['cv_document']['tmp_name'])) {
+		if ( isset( $postData['files']['cv_document'] ) && ! empty( $postData['files']['cv_document']['tmp_name'] ) ) {
 
 			$file = $postData['files']['cv_document'];
 
@@ -381,7 +389,7 @@ class Wp_EazyCV_Apply {
 			$postData['useTextkernel'] = false;
 		}
 
-		if ( isset( $postData['files']['cv_document_tk'] ) && !empty($postData['files']['cv_document_tk']['tmp_name'])) {
+		if ( isset( $postData['files']['cv_document_tk'] ) && ! empty( $postData['files']['cv_document_tk']['tmp_name'] ) ) {
 
 			$file = $postData['files']['cv_document_tk'];
 
@@ -471,7 +479,7 @@ class Wp_EazyCV_Apply {
 			$postData['user']['gender'] = 'm';
 		}
 
-		$postData['subscription_form_id'] = get_option( 'wp_eazycv_apply_form' );;
+		$postData['subscription_form_id'] = $this->apply_form;
 
 		unset( $postData['files'] );
 

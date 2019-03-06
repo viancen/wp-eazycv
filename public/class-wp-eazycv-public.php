@@ -280,6 +280,7 @@ class Wp_EazyCV_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		wp_enqueue_style( 'eazy-font-awesome', plugin_dir_url( __FILE__ ) . 'css/fa/css/font-awesome.min.css' );
 
 		wp_enqueue_style( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'css/wp-eazycv-public.css', array(), $this->version, 'all' );
 		$customCss = get_option( 'wp_eazycv_styling' );
