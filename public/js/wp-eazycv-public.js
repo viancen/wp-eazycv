@@ -57,7 +57,6 @@
         }
     }
 
-
     $(document).on('click', '#eazy-apply-submit-btn', function () {
 
         //todo: validation if none on default wordpress settings
@@ -70,7 +69,6 @@
                 grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
                     function (token) {
                         $('#eazy-apply-submit-btn').prop('disabled', true);
-                        console.log(token);
                         $('#eazycv-greval').val(token);
                         $('#eazycv-apply-form').submit();
                     });
