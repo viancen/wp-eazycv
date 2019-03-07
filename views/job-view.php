@@ -27,8 +27,8 @@ class Wp_EazyCV_Job {
 
 		foreach ( $this->job['texts'] as $kk => $text ) {
 			if ( ! empty( trim( strip_tags( $text['content'] ) ) ) ) {
-				if(!isset($text['label_'. $this->job['type']]))$text['label_'. $this->job['type']] = '';
-				$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $kk ) . '">' . $text['label_'. $this->job['type']] . '</h3>';
+
+				$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $kk ) . '">' . $text['label'] . '</h3>';
 				$html .= '<p class="eazycv-job-view-paragraph eazycv-job-paragraph-' . sanitize_title( $kk ) . '">' . $text['content'] . '</p>';
 			}
 		}

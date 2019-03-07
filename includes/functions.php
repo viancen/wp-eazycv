@@ -21,6 +21,17 @@ if ( ! function_exists( 'dump' ) ) {
 	}
 
 }
+if ( ! function_exists( 'eazy_first_words' ) ) {
+	function eazy_first_words( $string, $amountofWords = 10 ) {
+		$pullString = implode( ' ', array_slice( explode( ' ', strip_tags( str_replace( PHP_EOL, ' ', $string ) ) ), 0, $amountofWords ) );
+		if ( strlen( $pullString ) != strlen( strip_tags( str_replace( PHP_EOL, ' ', $string ) ) ) ) {
+			$pullString .= '...';
+		}
+
+		return $pullString;
+	}
+
+}
 if ( ! function_exists( 'current_location' ) ) {
 
 	function current_location() {

@@ -35,6 +35,18 @@ class Wp_EazyCV_Job_Search {
 			return '<div class="eazy-error">' . __( 'Er is (nog) geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
+
+		try {
+			$formSettings = $this->api->get( 'connectivity/public-forms/' . $portalId );
+
+		} catch ( Exception $exception ) {
+			return '<div class="eazy-error">' . __( 'Er is een fout inschrijfformulier ingesteld.' ) . '</div>';
+		}
+
+		if ( ! empty( $formSettings['layout_settings'] ) ) {
+			$formSettings['layout_settings'] = json_decode( $formSettings['layout_settings'], true );
+		}
+
 		$jobs = $this->api->get( 'jobs/published', [
 			'filter' => $filters
 		] );
@@ -67,10 +79,22 @@ class Wp_EazyCV_Job_Search {
 
 			$html .= '<div class="eazycv-job-row">';
 			$html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
+
+
 			if ( isset( $job['texts']['meta']['content'] ) ) {
-				$html .= '<p>' . $job['texts']['meta']['content'] . '</p>';
+				if ( isset( $formSettings['layout_settings']['max-words-job-result-text'] ) ) {
+					$html .= '<p>' . eazy_first_words( $job['texts']['meta']['content'], intval( $formSettings['layout_settings']['max-words-job-result-text'] ) ) . '</p>';
+				} else {
+					$html .= '<p>' . $job['texts']['meta']['content'] . '</p>';
+				}
+
+
 			} else if ( isset( $job['texts']['summary']['content'] ) ) {
-				$html .= '<p>' . $job['texts']['summary']['content'] . '</p>';
+				if ( isset( $formSettings['layout_settings']['max-words-job-result-text'] ) ) {
+					$html .= '<p>' . eazy_first_words( $job['texts']['summary']['content'], intval( $formSettings['layout_settings']['max-words-job-result-text'] ) ) . '</p>';
+				} else {
+					$html .= '<p>' . $job['texts']['summary']['content'] . '</p>';
+				}
 			}
 
 			$html .= '<div class="eazycv-job-row-details">';

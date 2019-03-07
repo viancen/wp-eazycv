@@ -410,16 +410,12 @@ class Wp_EazyCV_Admin {
 
 		if ( empty( $forms['data'] ) ) {
 			echo '<div class="alert">' . __( 'No forms available in EazyCV' ) . '</div>';
-
 			return;
 		}
-
-
 		?>
         <select class="eazycv-admin-select"
                 name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
-                id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
-        >
+                id="<?php echo $this->option_name . "_" . $fields['field']; ?>">
             <option value=""></option>
 			<?php
 			foreach ( $forms['data'] as $form ) { ?>
