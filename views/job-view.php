@@ -26,18 +26,23 @@ class Wp_EazyCV_Job {
 		$html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
 
 		foreach ( $this->job['texts'] as $kk => $text ) {
-			if ( ! empty( trim( strip_tags( $text['content'] ) ) ) ) {
 
-				$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $kk ) . '">' . $text['label'] . '</h3>';
-				$html .= '<p class="eazycv-job-view-paragraph eazycv-job-paragraph-' . sanitize_title( $kk ) . '">' . $text['content'] . '</p>';
+			if ( isset( $text['content'] ) ) {
+				if ( ! empty( trim( strip_tags( $text['content'] ) ) ) ) {
+					$html .= '<div class="eazycv-job-text-block eazycv-job-text-block-' . sanitize_title( $kk ) . '">';
+					$html .= '<h3 class="eazycv-job-view-h3" id="eazycv-job-heading eazycv-job-heading-' . sanitize_title( $kk ) . '">' . $text['label'] . '</h3>';
+					$html .= '<p class="eazycv-job-view-paragraph eazycv-job-paragraph-' . sanitize_title( $kk ) . '">' . $text['content'] . '</p>';
+					$html .= '</div>';
+				}
 			}
 		}
-
+		$html .= '<div class="eazycv-job-view-apply-footer">';
 		if ( ! empty( $this->job ) ) {
 			$html .= '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option( 'wp_eazycv_apply_page' ) . '/' . sanitize_title( $this->job['functiontitle'] ) . '-' . $this->job['id'] . $mainForm . '">' . __( 'Solliciteren' ) . '</a>';
 		} else {
 			$html .= '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option( 'wp_eazycv_apply_page' ) . '/open' . $mainForm . '">' . __( 'Solliciteren' ) . '</a>';
 		}
+		$html .= '</div>';
 		$html .= '</div>';
 
 		return $html;
