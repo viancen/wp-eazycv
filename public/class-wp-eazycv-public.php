@@ -214,10 +214,14 @@ class Wp_EazyCV_Public {
 					'email' => $stripEmail
 				] );
 				if ( isset( $result['exists'] ) && intval( $result['exists'] ) == 1 ) {
+					$jobId = '';
+					if ( isset( $_POST['job_id'] ) ) {
+						$jobId = intval( $_POST['job_id'] );
+					}
 					echo json_encode( [
 						'error'   => true,
 						'message' => __( 'Het lijkt erop dat je eerder gesolliciteerd hebt met dit e-mailadres. 
-					                    <a class="eazycv-error-applied eazycv-link" target="_blank" href="https://' . get_option( 'wp_eazycv_instance' ) . '.eazycv.cloud' . '">Klik hier om verder te gaan</a>.' )
+					                    <a class="eazycv-error-applied eazycv-link" target="_blank" href="https://' . get_option( 'wp_eazycv_instance' ) . '.eazycv.cloud?apply-to=' . $jobId . '">Klik hier om verder te gaan</a>.' )
 					] );
 				} else {
 					echo json_encode( [ 'error' => false ] );

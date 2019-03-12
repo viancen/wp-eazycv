@@ -86,6 +86,7 @@
             $.post(eazycv_ajax_object.ajaxurl, {
                 action: 'eazycv_check_email_address',
                 email_address: $(this).val(),
+                job_id: $('#eazycv-apply-job_id').val(),
                 dataType: 'json'
             }, function (response) {
 

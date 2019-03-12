@@ -71,7 +71,7 @@ class Wp_EazyCV_Apply {
 			if ( $success == 'Error' ) {
 				$url = current_location() . '?success=false';
 
-				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, neem contact op met ons.' ) . '</div>';
+				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, neem contact met ons op.' ) . '</div>';
 			} elseif ( $success == 'Error-Captcha' ) {
 				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, ben je een robot?' ) . '</div>';
 			} else {
@@ -97,7 +97,7 @@ class Wp_EazyCV_Apply {
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
 		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
   			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
-  			<input type="hidden" name="job_id" value="' . $this->job['id'] . '">
+  			<input type="hidden" id="eazycv-apply-job_id"  name="job_id" value="' . $this->job['id'] . '">
   			';
 
 		foreach ( $formSettings['fields'] as $field ) {

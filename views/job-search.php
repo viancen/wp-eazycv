@@ -51,6 +51,9 @@ class Wp_EazyCV_Job_Search {
 			'filter' => $filters
 		] );
 
+		if(empty( $jobs['data'] )){
+			return  '<div class="eazy-error">' .$formSettings['no_results_message'] . '</div>';
+		}
 		$html = '';
 		foreach ( $jobs['data'] as $job ) {
 
