@@ -214,6 +214,7 @@ class wp_eazycv {
 		$plugin_public = new Wp_EazyCV_Public( $this->get_wp_eazycv(), $this->get_version() );
 
 		$plugin_public->setup_rewrites();
+		$plugin_public->setup_ajax();
 
 		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'check_custom_pages' );
 		$this->loader->add_action( 'init', $plugin_public, 'setup_shortcodes' );

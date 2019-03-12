@@ -165,6 +165,10 @@ class Wp_EazyCV_Public {
 			}
 		}
 
+		if ( empty( $this->job['original_functiontitle'] ) && ! empty( $this->job['functiontitle'] ) ) {
+			$this->job['original_functiontitle'] = $this->job['functiontitle'];
+		}
+
 		if ( ! empty( $getTitle ) ) {
 			foreach ( $this->job as $key => $val ) {
 				if ( is_string( $val ) ) {
@@ -192,6 +196,42 @@ class Wp_EazyCV_Public {
 		//return $this->job['functiontitle'];
 	}
 
+	public function setup_ajax() {
+
+		//both admin and public
+		add_action( 'wp_ajax_eazycv_check_email_address', 'eazycv_check_email_address' );
+		add_action( 'wp_ajax_nopriv_eazycv_check_email_address', 'eazycv_check_email_address' );
+
+		function eazycv_check_email_address() {
+			global $wpdb; // this is how you get access to the database
+
+			$stripEmail = filter_var( $_POST['email_address'], FILTER_SANITIZE_EMAIL );
+
+			if ( filter_var( $stripEmail, FILTER_VALIDATE_EMAIL ) && ( ! empty( get_option( 'wp_eazycv_apikey' ) ) && ! empty( get_option( 'wp_eazycv_instance' ) ) ) ) {
+
+				$api    = new EazycvClient( get_option( 'wp_eazycv_apikey' ), get_option( 'wp_eazycv_instance' ) );
+				$result = $api->post( 'users/check-existing-email-address', [
+					'email' => $stripEmail
+				] );
+				if ( isset( $result['exists'] ) && intval( $result['exists'] ) == 1 ) {
+					echo json_encode( [
+						'error'   => true,
+						'message' => __( 'Het lijkt erop dat je eerder gesolliciteerd hebt met dit e-mailadres. 
+					                    <a class="eazycv-error-applied eazycv-link" target="_blank" href="https://' . get_option( 'wp_eazycv_instance' ) . '.eazycv.cloud' . '">Klik hier om verder te gaan</a>.' )
+					] );
+				} else {
+					echo json_encode( [ 'error' => false ] );
+				}
+			} else {
+				echo json_encode( [
+					'error'   => true,
+					'message' => __( 'Dit is geen geldig e-mailadres. ' )
+				] );
+			}
+			wp_die();
+		}
+	}
+
 	/**
 	 * make url work
 	 */
@@ -199,7 +239,7 @@ class Wp_EazyCV_Public {
 
 		add_filter( 'query_vars', 'add_eazycv_vars', 0, 1 );
 		function add_eazycv_vars( $vars ) {
-
+			$vars[] = 'EazyCVCheckEmail';
 			$vars[] = 'JobID';
 			$vars[] = 'ProjectID';
 			$vars[] = 'EazyCVSearch';
@@ -301,7 +341,7 @@ class Wp_EazyCV_Public {
 
 		if ( empty( $this->job ) ) {
 			//
-			return 'Not available anymeer';
+			return '---';
 		} else {
 			$emolJobView = new Wp_EazyCV_Job( $this->job, $this->api );
 
@@ -322,7 +362,7 @@ class Wp_EazyCV_Public {
 
 		if ( empty( $this->api ) ) {
 			//
-			return 'EazyCV not connected';
+			return 'EazyCV error 327';
 		} else {
 			$emolJobView = new Wp_EazyCV_Job_Search( $this->api, $atts );
 
@@ -343,8 +383,9 @@ class Wp_EazyCV_Public {
 
 		if ( empty( $this->api ) ) {
 			//
-			return 'EazyCV not connected';
+			return 'EazyCV error 348';
 		} else {
+
 			$emolJobView = new Wp_EazyCV_Apply( $this->api, $atts, $this->job );
 
 			return $emolJobView->render();
@@ -381,7 +422,18 @@ class Wp_EazyCV_Public {
 		 * class.
 		 */
 
+		/**
+		 * frontend ajax requests.
+		 */
+
 		wp_enqueue_script( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-public.js', array( 'jquery' ), $this->version, true );
+
+		wp_localize_script( $this->wp_eazycv, 'eazycv_ajax_object',
+			array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
+
 		$customScript = get_option( 'wp_eazycv_scripting' );
 		if ( ! empty( $customScript ) ) {
 			wp_add_inline_script( $this->wp_eazycv, $customScript );

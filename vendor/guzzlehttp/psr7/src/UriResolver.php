@@ -118,10 +118,10 @@ final class UriResolver
      * One use-case is to use the current request URI as base URI and then generate relative links in your documents
      * to reduce the document size or offer self-contained downloadable document archives.
      *
-     *    $base = new Uri('https://eazycv.nl/a/b/');
-     *    echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/b/c'));  // prints 'c'.
-     *    echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/x/y'));  // prints '../x/y'.
-     *    echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/b/?q')); // prints '?q'.
+     *    $base = new Uri('http://example.com/a/b/');
+     *    echo UriResolver::relativize($base, new Uri('http://example.com/a/b/c'));  // prints 'c'.
+     *    echo UriResolver::relativize($base, new Uri('http://example.com/a/x/y'));  // prints '../x/y'.
+     *    echo UriResolver::relativize($base, new Uri('http://example.com/a/b/?q')); // prints '?q'.
      *    echo UriResolver::relativize($base, new Uri('http://example.org/a/b/'));   // prints '//example.org/a/b/'.
      *
      * This method also accepts a target that is already relative and will try to relativize it further. Only a

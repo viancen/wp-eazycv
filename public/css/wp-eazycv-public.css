@@ -36,11 +36,12 @@
 }
 
 /* The Modal (background) */
+
 .eazycv-modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
+    z-index: 2000000; /* Sit on top */
+    right: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
@@ -51,19 +52,19 @@
 
 /* Modal Header */
 .eazycv-modal-header {
-    padding: 2px 16px;
+    padding: 10px;
     background-color: #5cb85c;
     color: white;
 }
 
 /* Modal Body */
 .eazycv-modal-body {
-    padding: 2px 16px;
+    padding:20px;
 }
 
 /* Modal Footer */
 .eazycv-modal-footer {
-    padding: 2px 16px;
+    padding: 10px;
     background-color: #5cb85c;
     color: white;
 }

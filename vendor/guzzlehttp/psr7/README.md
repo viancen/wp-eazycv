@@ -315,7 +315,7 @@ There are various functions available under the `GuzzleHttp\Psr7` namespace.
 Returns the string representation of an HTTP message.
 
 ```php
-$request = new GuzzleHttp\Psr7\Request('GET', 'https://eazycv.nl');
+$request = new GuzzleHttp\Psr7\Request('GET', 'http://example.com');
 echo GuzzleHttp\Psr7\str($request);
 ```
 
@@ -329,7 +329,7 @@ UriInterface for the given value. If the value is already a `UriInterface`, it
 is returned as-is.
 
 ```php
-$uri = GuzzleHttp\Psr7\uri_for('https://eazycv.nl');
+$uri = GuzzleHttp\Psr7\uri_for('http://example.com');
 assert($uri === GuzzleHttp\Psr7\uri_for($uri));
 ```
 
@@ -372,7 +372,7 @@ This method accepts the following `$resource` types:
 $stream = GuzzleHttp\Psr7\stream_for('foo');
 $stream = GuzzleHttp\Psr7\stream_for(fopen('/path/to/file', 'r'));
 
-$generator function ($bytes) {
+$generator = function ($bytes) {
     for ($i = 0; $i < $bytes; $i++) {
         yield ' ';
     }
@@ -606,6 +606,12 @@ Creates a new URI with a specific query string value. Any existing query string 
 provided key are removed and replaced with the given key value pair. A value of null will set the query string
 key without a value, e.g. "key" instead of "key=value".
 
+### `GuzzleHttp\Psr7\Uri::withQueryValues`
+
+`public static function withQueryValues(UriInterface $uri, array $keyValueArray): UriInterface`
+
+Creates a new URI with multiple query string values. It has the same behavior as `withQueryValue()` but for an
+associative array of key => value.
 
 ### `GuzzleHttp\Psr7\Uri::withoutQueryValue`
 
@@ -647,10 +653,10 @@ One use-case is to use the current request URI as base URI and then generate rel
 to reduce the document size or offer self-contained downloadable document archives.
 
 ```php
-$base = new Uri('https://eazycv.nl/a/b/');
-echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/b/c'));  // prints 'c'.
-echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/x/y'));  // prints '../x/y'.
-echo UriResolver::relativize($base, new Uri('https://eazycv.nl/a/b/?q')); // prints '?q'.
+$base = new Uri('http://example.com/a/b/');
+echo UriResolver::relativize($base, new Uri('http://example.com/a/b/c'));  // prints 'c'.
+echo UriResolver::relativize($base, new Uri('http://example.com/a/x/y'));  // prints '../x/y'.
+echo UriResolver::relativize($base, new Uri('http://example.com/a/b/?q')); // prints '?q'.
 echo UriResolver::relativize($base, new Uri('http://example.org/a/b/'));   // prints '//example.org/a/b/'.
 ```
 

@@ -35,6 +35,7 @@
         var modal = document.getElementById('eazycv-gdpr-modal');
 
         if (modal) {
+
             // Get the button that opens the modal
             var btn = document.getElementById("eazycv-gdpr-link");
 
@@ -81,6 +82,37 @@
             var modal = document.getElementById('eazycv-gdpr-modal');
             modal.style.display = "none";
 
+        }).on('blur', '#eazycv-field-email', function () {
+            $.post(eazycv_ajax_object.ajaxurl, {
+                action: 'eazycv_check_email_address',
+                email_address: $(this).val(),
+                dataType: 'json'
+            }, function (response) {
+
+                response = $.parseJSON(response);
+
+                $('#eazycv-ajax-email-error').html('');
+
+                $("#eazycv-apply-form input, #eazycv-apply-form button, #eazycv-apply-form label, #eazycv-apply-form select, #eazycv-apply-form textarea")
+                    .prop("disabled", false)
+                    .removeClass('disabled').fadeTo("slow", 1);
+
+                if (response.error == true) {
+
+                    $("#eazycv-apply-form input,#eazycv-apply-form button,#eazycv-apply-form label, #eazycv-apply-form select, #eazycv-apply-form textarea")
+                        .prop("disabled", true)
+                        .addClass('disabled').fadeTo("slow", 0.4);
+
+                    $('#eazycv-field-email')
+                        .prop("disabled", false)
+                        .removeClass('disabled').fadeTo("slow", 1);
+
+                    var errorRedirectDir = '<div class="eazy-error">' + response.message + '</div>';
+                    $('#eazycv-ajax-email-error').html(errorRedirectDir);
+                }
+                // Handle the response however best suits your needs
+
+            });
         });
     });
 })(jQuery);

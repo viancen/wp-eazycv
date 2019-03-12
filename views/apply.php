@@ -17,6 +17,7 @@ class Wp_EazyCV_Apply {
 
 	public function render() {
 
+		$mainForm = null;
 
 		///wp force
 		wp_enqueue_script( 'eazy_recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option( 'wp_eazycv_google_api_key' ), [], '19801203' );
@@ -89,7 +90,9 @@ class Wp_EazyCV_Apply {
 			$html = '<h2 class="eazycv-job-view-h2">' . __( 'Open Application' ) . '</h2>';
 
 		}
-		$html .= '<div class="eazycv-form">
+		$html .= '
+
+<div class="eazycv-form">
 <div class="eazy-error" id="eazy-from-apply-error" style="display:none;"></div>
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
 		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
@@ -147,6 +150,7 @@ class Wp_EazyCV_Apply {
                 </p>';
 
 			$html .= '<!-- The Modal -->
+
 				<div id="eazycv-gdpr-modal" class="eazycv-modal">
 					<div class="eazycv-modal-content">
 					  <div class="eazycv-modal-header">
@@ -181,7 +185,7 @@ class Wp_EazyCV_Apply {
 	public function textField( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
 		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
@@ -190,6 +194,11 @@ class Wp_EazyCV_Apply {
 			$html .= ' class="eazycv-field eazycv-text" />';
 		}
 		$html .= '</div>' . PHP_EOL;
+
+		if ( $field['name'] == 'email' ) {
+			$html .= '<div id="eazycv-ajax-email-error"></div>';
+		}
+
 
 		return $html;
 	}
@@ -204,7 +213,7 @@ class Wp_EazyCV_Apply {
 	public function fileUpload( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
 		$html .= '<div class="eazy-file-upload-wrapper" data-text="Selecteer ' . $field['label'] . '">';
 		$html .= '<input type="file" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
@@ -230,7 +239,7 @@ class Wp_EazyCV_Apply {
 	public function dateField( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
 		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
@@ -253,7 +262,7 @@ class Wp_EazyCV_Apply {
 	public function textarea( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
 		$html .= '<textarea id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
@@ -277,7 +286,7 @@ class Wp_EazyCV_Apply {
 	public function gender( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
 		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="gender"';
 
 		if ( $field['required'] ) {
@@ -305,7 +314,7 @@ class Wp_EazyCV_Apply {
 	public function connectThrough( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>';
-		$html .= '<label class="eazycv-label" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>';
+		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>';
 		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="connect_through_id"';
 
 		if ( $field['required'] ) {
@@ -334,6 +343,7 @@ class Wp_EazyCV_Apply {
 	 */
 	public function formType( $field ) {
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
+		$html .= '<label id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="field-' . sanitize_title( $field['label'] ) . '">' . $field['label'] . '</label>';
 
 		$html .= '<i class="' . $field['icon'] . ' prefix"></i>';
 		$html .= '<select id="field-' . sanitize_title( $field['label'] ) . '" name="type" required="" aria-required="true" class="validate">';
@@ -350,7 +360,6 @@ class Wp_EazyCV_Apply {
 			}
 		}
 		$html .= '</select>';
-		$html .= '<label for="field-' . sanitize_title( $field['label'] ) . '">' . $field['label'] . '</label>';
 		$html .= '</div>';
 
 		return $html;
