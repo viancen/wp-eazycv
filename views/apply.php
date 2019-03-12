@@ -105,6 +105,7 @@ class Wp_EazyCV_Apply {
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
 		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
   			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
+  			<input type="hidden" name="subscription_form_id" value="' . $this->apply_form . '">
   			<input type="hidden" id="eazycv-apply-job_id"  name="job_id" value="' . $this->job['id'] . '">
   			';
 
@@ -515,7 +516,7 @@ class Wp_EazyCV_Apply {
 			$postData['user']['gender'] = 'm';
 		}
 
-		$postData['subscription_form_id'] = $this->apply_form;
+		//$postData['subscription_form_id'] = $this->apply_form;
 
 		unset( $postData['files'] );
 

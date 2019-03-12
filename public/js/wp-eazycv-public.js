@@ -44,7 +44,10 @@
                 grecaptcha.ready(function () {
                     grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
                         function (token) {
-                            $.featherlight($('#eazycv-wait-modal'), {});
+                            $.featherlight($('#eazycv-wait-modal'), {
+                                closeOnEsc: false,
+                                closeIcon: '',
+                            });
                             $('#eazy-apply-submit-btn').prop('disabled', true);
                             $('#eazycv-greval').val(token);
                             $('#eazycv-apply-form').submit();
