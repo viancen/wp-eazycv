@@ -102,7 +102,7 @@ class Wp_EazyCV_Admin {
 			'manage_options',
 			$this->plugin_name,
 			array( $this, 'display_plugin_admin_page' ),
-			'https://eazycv.nl/wp-content/uploads/2018/10/eazycv-icon-16.png', 2 );
+			plugin_dir_url( __FILE__ ).'/eazycv-icon.png', 2 );
 		//add_options_page( __('EazyCV', $this->plugin_name), __('EazyCV', $this->plugin_name), 'manage_options', $this->plugin_name,);
 
 	}
