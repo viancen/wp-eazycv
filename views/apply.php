@@ -84,10 +84,18 @@ class Wp_EazyCV_Apply {
 		$this->licence = $this->api->get( 'licence' );
 		$legal_stuff   = $this->api->get( 'legal-info' );
 
+		$html = '';
+
 		if ( ! empty( $this->job ) ) {
-			$html = '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
+			$label = ! empty( $this->atts['title_apply'] ) ? $this->atts['title_apply'] : '';
+			if ( ! empty( $label ) ) {
+				$html = '<h2 class="eazycv-job-view-h2">' . $label . ' ' . $this->job['original_functiontitle'] . '</h2>';
+			}
 		} else {
-			$html = '<h2 class="eazycv-job-view-h2">' . __( 'Open Application' ) . '</h2>';
+			$label = ! empty( $this->atts['title_open'] ) ? $this->atts['title_open'] : '';
+			if ( ! empty( $label ) ) {
+				$html = '<h2 class="eazycv-job-view-h2">' . $label . '</h2>';
+			}
 
 		}
 		$html .= '
@@ -123,7 +131,9 @@ class Wp_EazyCV_Apply {
 
 		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __( 'Submit' ) . '">';
 
-		$html .= '</form></div>';
+		$html .= '</form></div>
+<div id="eazycv-wait-modal" class="eazycv-modal">Een moment geduld, uw sollicitatie wordt verwerkt.</div>
+			';
 
 		return $html;
 	}
@@ -145,30 +155,23 @@ class Wp_EazyCV_Apply {
                                name="accept_gdpr_version"
                                value="' . $legal_stuff['gdpr_candidate']['version_nr'] . '"/>
                              
-                        <a href="javascript:;" id="eazycv-gdpr-link"> ' . __( 'Ik ga akkoord met de privacy voowaarden & algemene voorwaarden' ) . '</a>
+                        <a href="#" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . __( 'Ik ga akkoord met de privacy voowaarden & algemene voorwaarden' ) . '</a>
                     </label>
                 </p>';
 
-			$html .= '<!-- The Modal -->
-
-				<div id="eazycv-gdpr-modal" class="eazycv-modal">
-					<div class="eazycv-modal-content">
-					  <div class="eazycv-modal-header">
-					    <span class="eazycv-close">&times;</span>
-					    <h2  class="eazycv-h2-gdpr-heading">' . __( 'Privacy & algemene voorwaarden' ) . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
-					  </div>
-					  <div class="eazycv-modal-body">
-					     <h4 class="eazycv-h4-privacy-heading">' . __( 'Privacy voorwaarden' ) . '</h4>
-					     <p class="eazycv-h4-privacy-p">' . $legal_stuff['gdpr_candidate']['content'] . '</p>
-					     <hr />
-					     <h4 class="eazycv-h4-terms-heading">' . __( 'Algemene voorwaarden' ) . '</h4>
-					      <p class="eazycv-h4-terms-p">' . $legal_stuff['terms_candidate']['content'] . '</p>
-					  </div>
-					  <div class="eazycv-modal-footer">
-					    <h3><button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __( 'Ik ga akkoord' ) . '</button> </h3>
-					  </div>
+			$html .= '
+			<div id="eazycv-gdpr-modal" class="eazycv-modal">
+				<h2  class="eazycv-h2-gdpr-heading">' . __( 'Privacy & algemene voorwaarden' ) . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
+			
+				    <h4 class="eazycv-h4-privacy-heading">' . __( 'Privacy voorwaarden' ) . '</h4>
+				    <div class="eazycv-h4-privacy-p">' . $legal_stuff['gdpr_candidate']['content'] . '</div>
+				    <Br />
+				    <h4 class="eazycv-h4-terms-heading">' . __( 'Algemene voorwaarden' ) . '</h4>
+				    <div class="eazycv-h4-terms-p">' . $legal_stuff['terms_candidate']['content'] . '</div>
+				  	<div class="eazycv-modal-footer"><hr />
+				   	 <button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __( 'Ik ga akkoord' ) . '</button>
 					</div> 
-				</div>';
+			</div>';
 		}
 
 

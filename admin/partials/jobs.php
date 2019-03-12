@@ -33,7 +33,7 @@
                     <td>Apply-page</td>
                     <td>:</td>
                     <td>[eazycv_apply]</td>
-                    <td class="eazy-text-muted">Optionally you can pass a different portalId : [eazycv_apply portal_id="312"]</td>
+                    <td class="eazy-text-muted">Optionally you can pass a different portalId : [eazycv_apply portal_id="312" title_open="Open subscriptions" title_apply="Apply to this job"]</td>
                 </tr>
             </table>
             </p>

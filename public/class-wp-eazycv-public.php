@@ -326,7 +326,9 @@ class Wp_EazyCV_Public {
 		 */
 		wp_enqueue_style( 'eazy-font-awesome', plugin_dir_url( __FILE__ ) . 'css/fa/css/font-awesome.min.css' );
 
+		wp_enqueue_style( $this->wp_eazycv . '-lighbox', plugin_dir_url( __FILE__ ) . 'css/wp-eazycv-lightbox.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'css/wp-eazycv-public.css', array(), $this->version, 'all' );
+
 		$customCss = get_option( 'wp_eazycv_styling' );
 		if ( ! empty( $customCss ) ) {
 			wp_add_inline_style( $this->wp_eazycv, $customCss );
@@ -429,7 +431,7 @@ class Wp_EazyCV_Public {
 		/**
 		 * frontend ajax requests.
 		 */
-
+		wp_enqueue_script( $this->wp_eazycv . '-lightbox', plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-lightbox.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->wp_eazycv, plugin_dir_url( __FILE__ ) . 'js/wp-eazycv-public.js', array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( $this->wp_eazycv, 'eazycv_ajax_object',
