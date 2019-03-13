@@ -221,7 +221,7 @@ class Wp_EazyCV_Public {
 					echo json_encode( [
 						'error'   => true,
 						'message' => __( 'Het lijkt erop dat je eerder gesolliciteerd hebt met dit e-mailadres. 
-					                    <a class="eazycv-error-applied eazycv-link" target="_blank" href="https://' . get_option( 'wp_eazycv_instance' ) . '.eazycv.cloud?apply-to=' . $jobId . '">Klik hier om verder te gaan</a>.' )
+					                    <a class="eazycv-error-applied eazycv-link" target="_blank" href="https://' . get_option( 'wp_eazycv_instance' ) . '.eazycv.cloud?email=' . urlencode( $stripEmail ) . '&apply-to=' . $jobId . '">Klik hier om verder te gaan</a>.' )
 					] );
 				} else {
 					echo json_encode( [ 'error' => false ] );
