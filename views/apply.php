@@ -115,7 +115,7 @@ class Wp_EazyCV_Apply {
 				$html .= $this->formType( $field );
 			} elseif ( $field['name'] == 'gender' ) {
 				$html .= $this->gender( $field );
-			} elseif ( in_array( $field['name'], [ 'cv_document', 'cv_document_tk', 'picture' ] ) ) {
+			} elseif ( in_array( $field['name'], [ 'cv_document', 'cv_document_tk', 'picture', 'attachment1', 'attachment2', 'attachment3' ] ) ) {
 				$html .= $this->fileUpload( $field );
 			} elseif ( in_array( $field['name'], [ 'birth_date', 'available_from', 'available_to' ] ) ) {
 				$html .= $this->dateField( $field );
@@ -387,6 +387,50 @@ class Wp_EazyCV_Apply {
 			return 'Error-Captcha';
 		}
 
+		$attachments = [
+			'attachment1',
+			'attachment2',
+			'attachment3',
+		];
+		foreach($attachments as $attachmentName){
+			if ( isset( $postData['files'][$attachmentName] ) && ! empty( $postData['files'][$attachmentName]['tmp_name'] ) ) {
+				$file = $postData['files'][$attachmentName];
+
+				$source = file_get_contents($postData['files'][$attachmentName]['tmp_name'] );
+
+				$imageFileType = strtolower( pathinfo( $postData['files'][$attachmentName]['name'], PATHINFO_EXTENSION ) );
+
+				if ( in_array( $imageFileType, [
+					'txt',
+					'pdf',
+					'doc',
+					'png',
+					'gif',
+					'jpg',
+					'docx'
+				] )
+				) {
+					$mimeType = [
+						'txt'  => 'application/text',
+						'pdf'  => 'application/pdf',
+						'doc'  => 'application/msword',
+						'png'  => 'image/png',
+						'jpg'  => 'image/jpg',
+						'gif'  => 'image/gif',
+						'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+					];
+					//resume addon
+					$postData['attachments'][]   = [
+						'filename'  => $postData['files'][$attachmentName]['name'],
+						'mime_type' => $mimeType[ $imageFileType ],
+						'content'   => base64_encode( $source )
+					];
+				}
+
+				unset($postData['files'][$attachmentName]);
+			}
+		}
+
 		if ( isset( $postData['files']['cv_document'] ) && ! empty( $postData['files']['cv_document']['tmp_name'] ) ) {
 
 			$file = $postData['files']['cv_document'];
@@ -519,6 +563,7 @@ class Wp_EazyCV_Apply {
 		//$postData['subscription_form_id'] = $this->apply_form;
 
 		unset( $postData['files'] );
+
 
 		try {
 
