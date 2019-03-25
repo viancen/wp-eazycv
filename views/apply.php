@@ -561,14 +561,10 @@ class Wp_EazyCV_Apply {
 		}
 
 		//$postData['subscription_form_id'] = $this->apply_form;
-
 		unset( $postData['files'] );
 
-
 		try {
-
 			$res = $this->api->post( 'candidates/signup', $postData );
-
 		} catch ( Exception $exception ) {
 			return 'Error';
 		}
