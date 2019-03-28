@@ -152,13 +152,14 @@ class Wp_EazyCV_Apply {
 
 			$html .= '<p class="eazycv-gdpr">
                     <label for="field-gdpr">
-                        <input type="checkbox" id="eazycv-field-gdpr" aria-required="true" required class="required validate"
+                        <input type="checkbox" id="eazycv-field-gdpr" data-eazycv-required="accept_gdpr_version"
                                name="accept_gdpr_version"
                                value="' . $legal_stuff['gdpr_candidate']['version_nr'] . '"/>
                              
                         <a href="#" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . __( 'Ik ga akkoord met de privacy voowaarden & algemene voorwaarden' ) . '</a>
                     </label>
                 </p>';
+			$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_gdpr_version">U moet akkoord gaan met de voorwaarden.</div>';
 
 			$html .= '
 			<div id="eazycv-gdpr-modal" class="eazycv-modal">
@@ -193,11 +194,13 @@ class Wp_EazyCV_Apply {
 		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-text validate" required="" aria-required="true" />';
+			$html .= ' class="eazycv-field eazycv-text" data-eazycv-required="' . sanitize_title( $field['name'] ) . '" />';
 		} else {
 			$html .= ' class="eazycv-field eazycv-text" />';
 		}
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
+
 
 		if ( $field['name'] == 'email' ) {
 			$html .= '<div id="eazycv-ajax-email-error"></div>';
@@ -223,10 +226,12 @@ class Wp_EazyCV_Apply {
 
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-file validate" required="" aria-required="true" />';
+			$html .= ' class="eazycv-field eazycv-file" data-eazycv-required="' . sanitize_title( $field['name'] ) . '"  />';
+
 		} else {
 			$html .= ' class="eazycv-field eazycv-file" />';
 		}
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>
 		</div>' . PHP_EOL;
 
@@ -247,10 +252,11 @@ class Wp_EazyCV_Apply {
 		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-date validate" required="" aria-required="true" />';
+			$html .= ' class="eazycv-field eazycv-date" data-eazycv-required="' . sanitize_title( $field['name'] ) . '" />';
 		} else {
 			$html .= ' class="eazycv-field eazycv-date" />';
 		}
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 		return $html;
@@ -270,11 +276,12 @@ class Wp_EazyCV_Apply {
 		$html .= '<textarea id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-textarea validate" required="" aria-required="true">';
+			$html .= ' class="eazycv-field eazycv-textarea" data-eazycv-required="' . sanitize_title( $field['name'] ) . '">';
 		} else {
 			$html .= ' class="eazycv-field eazycv-textarea">';
 		}
 		$html .= '</textarea>' . PHP_EOL;
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 		return $html;
@@ -294,7 +301,7 @@ class Wp_EazyCV_Apply {
 		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="gender"';
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-select validate" required="" aria-required="true">' . PHP_EOL;
+			$html .= ' class="eazycv-field eazycv-select"  data-eazycv-required="' . sanitize_title( $field['name'] ) . '" >' . PHP_EOL;
 		} else {
 			$html .= ' class="eazycv-field eazycv-select">' . PHP_EOL;
 		}
@@ -302,6 +309,7 @@ class Wp_EazyCV_Apply {
 		$html .= ' <option value="f">' . __( 'Female' ) . '</option>' . PHP_EOL;
 
 		$html .= '</select>' . PHP_EOL;
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 
@@ -322,7 +330,7 @@ class Wp_EazyCV_Apply {
 		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="connect_through_id"';
 
 		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-select validate" required="" aria-required="true">';
+			$html .= ' class="eazycv-field eazycv-select" data-eazycv-required="' . sanitize_title( $field['name'] ) . '">';
 		} else {
 			$html .= ' class="eazycv-field eazycv-select">';
 		}
@@ -332,6 +340,7 @@ class Wp_EazyCV_Apply {
 		}
 
 		$html .= '</select>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>';
 
 
@@ -350,7 +359,7 @@ class Wp_EazyCV_Apply {
 		$html .= '<label id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="field-' . sanitize_title( $field['label'] ) . '">' . $field['label'] . '</label>';
 
 		$html .= '<i class="' . $field['icon'] . ' prefix"></i>';
-		$html .= '<select id="field-' . sanitize_title( $field['label'] ) . '" name="type" required="" aria-required="true" class="validate">';
+		$html .= '<select id="field-' . sanitize_title( $field['label'] ) . '" name="type"  data-eazycv-required="' . sanitize_title( $field['name'] ) . '" class="validate">';
 		foreach ( $this->lists['LicenceTypes'] as $group => $items ) {
 			foreach ( $items as $onLic ) {
 				if ( $this->licence['customer']['licence_types'][ $onLic ] == true ) {
@@ -364,6 +373,7 @@ class Wp_EazyCV_Apply {
 			}
 		}
 		$html .= '</select>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
 		$html .= '</div>';
 
 		return $html;
@@ -392,13 +402,13 @@ class Wp_EazyCV_Apply {
 			'attachment2',
 			'attachment3',
 		];
-		foreach($attachments as $attachmentName){
-			if ( isset( $postData['files'][$attachmentName] ) && ! empty( $postData['files'][$attachmentName]['tmp_name'] ) ) {
-				$file = $postData['files'][$attachmentName];
+		foreach ( $attachments as $attachmentName ) {
+			if ( isset( $postData['files'][ $attachmentName ] ) && ! empty( $postData['files'][ $attachmentName ]['tmp_name'] ) ) {
+				$file = $postData['files'][ $attachmentName ];
 
-				$source = file_get_contents($postData['files'][$attachmentName]['tmp_name'] );
+				$source = file_get_contents( $postData['files'][ $attachmentName ]['tmp_name'] );
 
-				$imageFileType = strtolower( pathinfo( $postData['files'][$attachmentName]['name'], PATHINFO_EXTENSION ) );
+				$imageFileType = strtolower( pathinfo( $postData['files'][ $attachmentName ]['name'], PATHINFO_EXTENSION ) );
 
 				if ( in_array( $imageFileType, [
 					'txt',
@@ -420,14 +430,14 @@ class Wp_EazyCV_Apply {
 						'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 					];
 					//resume addon
-					$postData['attachments'][]   = [
-						'filename'  => $postData['files'][$attachmentName]['name'],
+					$postData['attachments'][] = [
+						'filename'  => $postData['files'][ $attachmentName ]['name'],
 						'mime_type' => $mimeType[ $imageFileType ],
 						'content'   => base64_encode( $source )
 					];
 				}
 
-				unset($postData['files'][$attachmentName]);
+				unset( $postData['files'][ $attachmentName ] );
 			}
 		}
 

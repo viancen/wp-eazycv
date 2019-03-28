@@ -34,26 +34,48 @@
 
         $(document).on('click', '#eazy-apply-submit-btn', function () {
 
-            //todo: validation if none on default wordpress settings
-            if (!$('#eazycv-field-email').val()) {
-                $('#eazy-from-apply-error').html('E-mailadres is verplicht');
-                $('#eazy-from-apply-error').css('display', 'block');
-            } else {
-                $('#eazy-apply-submit-btn').attr('disabled', true);
+            $('[data-eazycv-required]').on('keyup change', function () {
+                if ($(this).val()) {
+                    $('#eazycv-error-' + $(this).data('eazycv-required')).addClass('eazycv-hidden');
+                }
+            });
 
-                grecaptcha.ready(function () {
-                    grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
-                        function (token) {
-                            $.featherlight($('#eazycv-wait-modal'), {
-                                closeOnEsc: false,
-                                closeIcon: '',
+            var hasError = false;
+            $('[data-eazycv-required]').each(function (a, b) {
+
+                if ($(b).attr('name') == 'accept_gdpr_version') {
+                    if (!$(b).is(':checked')) {
+                        $('#eazycv-error-' + $(b).data('eazycv-required')).removeClass('eazycv-hidden');
+                        hasError = true;
+                    }
+                } else {
+                    if (!$(b).val()) {
+                        $('#eazycv-error-' + $(b).data('eazycv-required')).removeClass('eazycv-hidden');
+                        hasError = true;
+                    }
+                }
+            }).promise().done(function () {
+
+                if (hasError) {
+                    return false;
+                } else {
+
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute($('#eazycv-grekey').val(), {action: 'eazycv_application'}).then(
+                            function (token) {
+                                $.featherlight($('#eazycv-wait-modal'), {
+                                    closeOnEsc: false,
+                                    closeIcon: '',
+                                });
+                                $('#eazy-apply-submit-btn').prop('disabled', true);
+                                $('#eazycv-greval').val(token);
+                                $('#eazycv-apply-form').submit();
                             });
-                            $('#eazy-apply-submit-btn').prop('disabled', true);
-                            $('#eazycv-greval').val(token);
-                            $('#eazycv-apply-form').submit();
-                        });
-                });
-            }
+                    });
+
+                }
+            });
+
         }).on('click', '#accept-gdpr-modal-btn', function () {
             $('#eazycv-field-gdpr').prop('checked', true);
             var current = $.featherlight.current();

@@ -34,7 +34,9 @@
     font-size: 2em;
     vertical-align: middle;
 }
-
+.eazycv-hidden {
+    display:none;
+}
 /* The Modal (background) */
 
 .eazycv-modal {
