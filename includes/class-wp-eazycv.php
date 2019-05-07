@@ -91,10 +91,12 @@ class wp_eazycv {
 
 
 	private function setup_eazycv_connection() {
+		$serviceUrl = get_option( 'wp_eazycv_service_url' );
+
 		$optionKey      = get_option( 'wp_eazycv_apikey' );
 		$optionInstance = get_option( 'wp_eazycv_instance' );
 		if ( ! empty( $optionKey ) && ! empty( $optionInstance ) ) {
-			$this->eazyCV = new EazycvClient( $optionKey, $optionInstance );
+			$this->eazyCV = new EazycvClient( $optionKey, $optionInstance, $serviceUrl );
 		}
 	}
 
@@ -158,7 +160,6 @@ class wp_eazycv {
 		 * EazyCV client
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
-
 
 
 		$this->loader = new Wp_EazyCV_Loader();
@@ -239,8 +240,8 @@ class wp_eazycv {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_wp_eazycv() {
 		return $this->wp_eazycv;
@@ -249,8 +250,8 @@ class wp_eazycv {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    Wp_EazyCV_Loader    Orchestrates the hooks of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -259,8 +260,8 @@ class wp_eazycv {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_version() {
 		return $this->version;

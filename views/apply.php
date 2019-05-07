@@ -198,7 +198,7 @@ class Wp_EazyCV_Apply {
 		} else {
 			$html .= ' class="eazycv-field eazycv-text" />';
 		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 
@@ -231,7 +231,7 @@ class Wp_EazyCV_Apply {
 		} else {
 			$html .= ' class="eazycv-field eazycv-file" />';
 		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>
 		</div>' . PHP_EOL;
 
@@ -256,7 +256,7 @@ class Wp_EazyCV_Apply {
 		} else {
 			$html .= ' class="eazycv-field eazycv-date" />';
 		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 		return $html;
@@ -270,6 +270,7 @@ class Wp_EazyCV_Apply {
 	 * @return string
 	 */
 	public function textarea( $field ) {
+
 		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
 		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
 		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
@@ -280,11 +281,13 @@ class Wp_EazyCV_Apply {
 		} else {
 			$html .= ' class="eazycv-field eazycv-textarea">';
 		}
+
 		$html .= '</textarea>' . PHP_EOL;
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 		return $html;
+
 	}
 
 	/**
@@ -309,7 +312,7 @@ class Wp_EazyCV_Apply {
 		$html .= ' <option value="f">' . __( 'Female' ) . '</option>' . PHP_EOL;
 
 		$html .= '</select>' . PHP_EOL;
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>' . PHP_EOL;
 
 
@@ -340,7 +343,7 @@ class Wp_EazyCV_Apply {
 		}
 
 		$html .= '</select>';
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>';
 
 
@@ -373,7 +376,7 @@ class Wp_EazyCV_Apply {
 			}
 		}
 		$html .= '</select>';
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">'.$field['label'].' is verplicht</div>';
+		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
 		$html .= '</div>';
 
 		return $html;

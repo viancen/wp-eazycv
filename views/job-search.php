@@ -35,7 +35,7 @@ class Wp_EazyCV_Job_Search {
 			return '<div class="eazy-error">' . __( 'Er is (nog) geen inschrijfformulier ingesteld.' ) . '</div>';
 		}
 
-
+		//$formSettings = $this->api->get( 'connectivity/public-forms/' . $portalId );
 		try {
 			$formSettings = $this->api->get( 'connectivity/public-forms/' . $portalId );
 

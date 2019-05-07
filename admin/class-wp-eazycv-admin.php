@@ -58,10 +58,11 @@ class Wp_EazyCV_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * @param string $wp_eazycv The name of this plugin.
+	 * @param string $version The version of this plugin.
+	 *
 	 * @since    1.0.0
 	 *
-	 * @param      string $wp_eazycv The name of this plugin.
-	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
@@ -74,10 +75,11 @@ class Wp_EazyCV_Admin {
 		$this->plugin_settings_tabs['scripting'] = 'Scripting';
 
 		//check connection
+		$serviceUrl     = get_option( 'wp_eazycv_service_url' );
 		$optionKey      = get_option( 'wp_eazycv_apikey' );
 		$optionInstance = get_option( 'wp_eazycv_instance' );
 		if ( ! empty( $optionKey ) && ! empty( $optionInstance ) ) {
-			$this->eazyCvApi = new EazycvClient( $optionKey, $optionInstance );
+			$this->eazyCvApi = new EazycvClient( $optionKey, $optionInstance, $serviceUrl );
 
 			try {
 				$this->eazyCvLicence = $this->eazyCvApi->get( 'licence' );
@@ -102,7 +104,7 @@ class Wp_EazyCV_Admin {
 			'manage_options',
 			$this->plugin_name,
 			array( $this, 'display_plugin_admin_page' ),
-			plugin_dir_url( __FILE__ ).'/eazycv-icon.png', 2 );
+			plugin_dir_url( __FILE__ ) . '/eazycv-icon.png', 2 );
 		//add_options_page( __('EazyCV', $this->plugin_name), __('EazyCV', $this->plugin_name), 'manage_options', $this->plugin_name,);
 
 	}
@@ -110,11 +112,11 @@ class Wp_EazyCV_Admin {
 	/**
 	 * Settings - Validates saved options
 	 *
-	 * @since        1.0.0
-	 *
-	 * @param        array $input array of submitted plugin options
+	 * @param array $input array of submitted plugin options
 	 *
 	 * @return        array                        array of validated plugin options
+	 * @since        1.0.0
+	 *
 	 */
 	public function settings_sanitize( $input ) {
 		// Initialize the new array that will hold the sanitize values
@@ -132,8 +134,8 @@ class Wp_EazyCV_Admin {
 	/**
 	 * Renders Settings Tabs
 	 *
-	 * @since        1.0.0
 	 * @return        mixed            The settings field
+	 * @since        1.0.0
 	 */
 	function filter_wp_api_render_tabs() {
 		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
@@ -149,8 +151,8 @@ class Wp_EazyCV_Admin {
 	/**
 	 * Plugin Settings Link on plugin page
 	 *
-	 * @since        1.0.0
 	 * @return        mixed            The settings field
+	 * @since        1.0.0
 	 */
 	function add_settings_link( $links ) {
 		$mylinks = array(
@@ -172,8 +174,8 @@ class Wp_EazyCV_Admin {
 	/**
 	 * Returns plugin for settings page
 	 *
-	 * @since        1.0.0
 	 * @return        string    $plugin_name       The name of this plugin
+	 * @since        1.0.0
 	 */
 	public function get_plugin() {
 		return $this->plugin_name;
@@ -233,7 +235,7 @@ class Wp_EazyCV_Admin {
 
 		add_settings_field( $this->option_name . "_jobpage", __( "Job Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage' ) );
 		add_settings_field( $this->option_name . "_jobpage_title", __( "Job PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'jobpage_title' ) );
-	    add_settings_field( $this->option_name . "_projectpage", __( "Project Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'projectpage' ) );
+		add_settings_field( $this->option_name . "_projectpage", __( "Project Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'projectpage' ) );
 		add_settings_field( $this->option_name . "_projectpage_title", __( "Project Title Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'projectpage_title' ) );
 		add_settings_field( $this->option_name . "_apply_page", __( "Apply Page" ), array( $this, "list_pages" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page' ) );
 		add_settings_field( $this->option_name . "_apply_page_title", __( "Apply PageTitle Template" ), array( $this, "display_form_element" ), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array( 'field' => 'apply_page_title' ) );
@@ -282,10 +284,12 @@ class Wp_EazyCV_Admin {
 
 		//setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
 		//last field section is optional.
+		add_settings_field( $this->option_name . "_service_url", __( "API-Url" ), array( $this, "display_form_element" ), $this->plugin_name . "-general-options", $this->plugin_name . "-general_section", array( 'field' => 'service_url' ) );
 		add_settings_field( $this->option_name . "_instance", __( "Instantie" ), array( $this, "display_form_element" ), $this->plugin_name . "-general-options", $this->plugin_name . "-general_section", array( 'field' => 'instance' ) );
 		add_settings_field( $this->option_name . "_apikey", __( "API Key" ), array( $this, "display_form_element" ), $this->plugin_name . "-general-options", $this->plugin_name . "-general_section", array( 'field' => 'apikey' ) );
 
 		//section name, form element name, callback for sanitization
+		register_setting( $this->plugin_name . "-general_section", $this->option_name . "_service_url" );
 		register_setting( $this->plugin_name . "-general_section", $this->option_name . "_instance" );
 		register_setting( $this->plugin_name . "-general_section", $this->option_name . "_apikey" );
 	}
@@ -410,6 +414,7 @@ class Wp_EazyCV_Admin {
 
 		if ( empty( $forms['data'] ) ) {
 			echo '<div class="alert">' . __( 'No forms available in EazyCV' ) . '</div>';
+
 			return;
 		}
 		?>

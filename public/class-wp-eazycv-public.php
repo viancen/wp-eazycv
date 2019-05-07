@@ -55,10 +55,11 @@ class Wp_EazyCV_Public {
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * @param string $wp_eazycv The name of the plugin.
+	 * @param string $version The version of this plugin.
+	 *
 	 * @since    1.0.0
 	 *
-	 * @param      string $wp_eazycv The name of the plugin.
-	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $wp_eazycv, $version ) {
 
@@ -79,10 +80,11 @@ class Wp_EazyCV_Public {
 	 */
 	private function setup_api() {
 		//check connection
-		$optionKey      = get_option( 'wp_eazycv_apikey' );
-		$optionInstance = get_option( 'wp_eazycv_instance' );
+		$optionServiceUrl = get_option( 'wp_eazycv_service_url' );
+		$optionKey        = get_option( 'wp_eazycv_apikey' );
+		$optionInstance   = get_option( 'wp_eazycv_instance' );
 		if ( ! empty( $optionKey ) && ! empty( $optionInstance ) ) {
-			$this->api = new EazycvClient( $optionKey, $optionInstance );
+			$this->api = new EazycvClient( $optionKey, $optionInstance, $optionServiceUrl );
 
 			try {
 				$this->eazyCvLicence = $this->api->get( 'licence' );
@@ -209,7 +211,7 @@ class Wp_EazyCV_Public {
 
 			if ( filter_var( $stripEmail, FILTER_VALIDATE_EMAIL ) && ( ! empty( get_option( 'wp_eazycv_apikey' ) ) && ! empty( get_option( 'wp_eazycv_instance' ) ) ) ) {
 
-				$api    = new EazycvClient( get_option( 'wp_eazycv_apikey' ), get_option( 'wp_eazycv_instance' ) );
+				$api    = new EazycvClient( get_option( 'wp_eazycv_apikey' ), get_option( 'wp_eazycv_instance' ) , get_option( 'wp_eazycv_service_url' ) );
 				$result = $api->post( 'users/check-existing-email-address', [
 					'email' => $stripEmail
 				] );
@@ -338,7 +340,7 @@ class Wp_EazyCV_Public {
 	/**
 	 * Shortcode Function
 	 *
-	 * @param  Attributes $atts l|t URL TEXT.
+	 * @param Attributes $atts l|t URL TEXT.
 	 *
 	 * @return string
 	 * @since  1.0.0
@@ -359,7 +361,7 @@ class Wp_EazyCV_Public {
 	/**
 	 * Shortcode Function
 	 *
-	 * @param  Attributes $atts l|t URL TEXT.
+	 * @param Attributes $atts l|t URL TEXT.
 	 *
 	 * @return string
 	 * @since  1.0.0
@@ -380,7 +382,7 @@ class Wp_EazyCV_Public {
 	/**
 	 * Shortcode Function
 	 *
-	 * @param  Attributes $atts l|t URL TEXT.
+	 * @param Attributes $atts l|t URL TEXT.
 	 *
 	 * @return string
 	 * @since  1.0.0
