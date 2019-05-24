@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac661f92555db097a246ff39e960d03f",
+    "content-hash": "9c0a04ef0ce45bb4a2b12abe2b4e9a42",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -281,16 +281,16 @@
         },
         {
             "name": "viancen/eazycv-client",
-            "version": "1.2.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/viancen/eazycv-client.git",
-                "reference": "159b636292187e7266231de37802eb10eabe6fd9"
+                "reference": "35b41cc93c287661dd297edd5936a1860c5d58ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/viancen/eazycv-client/zipball/159b636292187e7266231de37802eb10eabe6fd9",
-                "reference": "159b636292187e7266231de37802eb10eabe6fd9",
+                "url": "https://api.github.com/repos/viancen/eazycv-client/zipball/35b41cc93c287661dd297edd5936a1860c5d58ec",
+                "reference": "35b41cc93c287661dd297edd5936a1860c5d58ec",
                 "shasum": ""
             },
             "require": {
@@ -324,13 +324,15 @@
                 "api",
                 "eazycv"
             ],
-            "time": "2016-06-10T13:08:47+00:00"
+            "time": "2019-05-24T12:18:01+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "viancen/eazycv-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

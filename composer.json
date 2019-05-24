@@ -1,5 +1,5 @@
 {
     "require": {
-        "viancen/eazycv-client": "^1.2"
+        "viancen/eazycv-client": "dev-master"
     }
 }
