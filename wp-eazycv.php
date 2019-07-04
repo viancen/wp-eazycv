@@ -17,14 +17,17 @@
  * Text Domain:       wp-eazycv
  * Domain Path:       /
  */
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
 /**
  * Currently plugin version.
  */
-define( 'Wp_EazyCV_VERSION', '1.2.8' );
+define( 'Wp_EazyCV_VERSION', '1.2.9' );
+define( 'Wp_EazyCV_DEBUG', false );
 
 /**
  * auto update through github

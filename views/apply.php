@@ -389,15 +389,18 @@ class Wp_EazyCV_Apply {
 	private function performApply( $postData ) {
 
 
-		if ( ! isset( $postData['grepact'] ) ) {
-			return 'Error';
-		}
+		if ( ! Wp_EazyCV_DEBUG ) {
 
-		$response = file_get_contents( 'https://www.google.com/recaptcha/api/siteverify?secret=' . get_option( 'wp_eazycv_google_api_secret' ) . '&response=' . $postData['grepact'] . '&remoteip=' . $_SERVER['REMOTE_ADDR'] );
-		$resp     = json_decode( $response );
+			if ( ! isset( $postData['grepact'] ) ) {
+				return 'Error';
+			}
 
-		if ( ! $resp->success ) {
-			return 'Error-Captcha';
+			$response = file_get_contents( 'https://www.google.com/recaptcha/api/siteverify?secret=' . get_option( 'wp_eazycv_google_api_secret' ) . '&response=' . $postData['grepact'] . '&remoteip=' . $_SERVER['REMOTE_ADDR'] );
+			$resp     = json_decode( $response );
+
+			if ( ! $resp->success ) {
+				return 'Error-Captcha';
+			}
 		}
 
 		$attachments = [
@@ -471,11 +474,6 @@ class Wp_EazyCV_Apply {
 					'mime_type' => $mimeType[ $imageFileType ],
 					'content'   => base64_encode( $source )
 				];
-				$postData['document'] = [
-					'content' => $postData['resume']['content'],
-					'name'    => $postData['resume']['filename'],
-					'type'    => $postData['resume']['mime_type'],
-				];
 
 			}
 
@@ -511,11 +509,7 @@ class Wp_EazyCV_Apply {
 					'mime_type' => $mimeType[ $imageFileType ],
 					'content'   => base64_encode( $source )
 				];
-				$postData['document'] = [
-					'content' => $postData['resume']['content'],
-					'name'    => $postData['resume']['filename'],
-					'type'    => $postData['resume']['mime_type'],
-				];
+
 			}
 
 			unset( $postData['files']['cv_document_tk'] );
@@ -575,10 +569,15 @@ class Wp_EazyCV_Apply {
 
 		//$postData['subscription_form_id'] = $this->apply_form;
 		unset( $postData['files'] );
+		unset( $postData['grepact'] );
+
 
 		try {
 			$res = $this->api->post( 'candidates/signup', $postData );
 		} catch ( Exception $exception ) {
+			if(Wp_EazyCV_DEBUG){
+				dump($exception->getMessage());
+			}
 			return 'Error';
 		}
 
