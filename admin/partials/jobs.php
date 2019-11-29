@@ -41,6 +41,7 @@
     </div>
 </div>
 <form method="post" action="options.php">
+
     <div id="normal-sortables" class="meta-box-sortables ui-sortable">
         <div id="itsec_get_started" class="postbox ">
             <h3 class="hndle"><span>Settings</span></h3>
@@ -55,6 +56,7 @@
 
 				submit_button( 'Save Settings' );
 				?>
+                <a class="button "  href="/wp-admin/post-new.php?post_type=page" target="_blank">Add New Page</a>
                 <div class="clear"></div>
             </div>
         </div>

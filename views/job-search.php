@@ -40,7 +40,7 @@ class Wp_EazyCV_Job_Search {
 			$formSettings = $this->api->get( 'connectivity/public-forms/' . $portalId );
 
 		} catch ( Exception $exception ) {
-			return '<div class="eazy-error">' . __( 'Er is een fout inschrijfformulier ingesteld.' ) . '</div>';
+			return '<div class="eazy-error">' . __( 'Er is een fout opgetreden.' ) . '</div>';
 		}
 
 		if ( ! empty( $formSettings['layout_settings'] ) ) {
@@ -52,7 +52,7 @@ class Wp_EazyCV_Job_Search {
 		] );
 
 		if(empty( $jobs['data'] )){
-			return  '<div class="eazy-error">' .$formSettings['no_results_message'] . '</div>';
+			return  '<div class="eazy-no-job-results">' .$formSettings['no_results_message'] . '</div>';
 		}
 		$html = '';
 		foreach ( $jobs['data'] as $job ) {
