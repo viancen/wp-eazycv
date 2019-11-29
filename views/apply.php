@@ -1,586 +1,397 @@
 <?php
 
-class Wp_EazyCV_Apply {
+class Wp_EazyCV_Apply
+{
 
-	public $job = null;
+    public $job = null;
 
-	private $api = null;
-	private $lists = null;
-	private $licence = null;
-	private $apply_form = null;
+    private $api = null;
+    private $lists = null;
+    private $licence = null;
+    private $apply_form = null;
 
-	function __construct( $api, $atts, $job = null ) {
-		$this->atts = $atts;
-		$this->api  = $api;
-		$this->job  = $job;
-	}
+    function __construct($api, $atts, $job = null)
+    {
+        $this->atts = $atts;
+        $this->api = $api;
+        $this->job = $job;
+    }
 
-	public function render() {
+    public function render()
+    {
 
-		$mainForm = null;
+        $mainForm = null;
 
-		///wp force
-		wp_enqueue_script( 'eazy_recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option( 'wp_eazycv_google_api_key' ), [], '19801203' );
+        ///wp force
+        wp_enqueue_script('eazy_recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . get_option('wp_eazycv_google_api_key'), [], '19801203');
 
-		$mainForm = null;
-		if ( isset( $_GET['applyform'] ) ) {
-			$mainForm = intval( $_GET['applyform'] );
-		}
+        $mainForm = null;
+        if (isset($_GET['applyform'])) {
+            $mainForm = intval($_GET['applyform']);
+        }
 
-		if ( empty( $mainForm ) && ! empty( $this->atts['portal_id'] ) ) {
-			$mainForm = intval( $this->atts['portal_id'] );
-		}
 
-		if ( empty( $mainForm ) ) {
-			$mainForm = get_option( 'wp_eazycv_apply_form' );
-		}
-		//first get the form
-		if ( empty( $mainForm ) ) {
-			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
-		}
+        if (empty($mainForm) && !empty($this->atts['portal_id'])) {
+            $mainForm = intval($this->atts['portal_id']);
+        }
 
-		$this->apply_form = $mainForm;
+        if (empty($mainForm)) {
+            $mainForm = get_option('wp_eazycv_apply_form');
+        }
+        //first get the form
+        if (empty($mainForm)) {
+            return '<div class="eazy-error">' . __('Er is geen inschrijfformulier ingesteld.') . '</div>';
+        }
 
-		$googleKey    = get_option( 'wp_eazycv_google_api_key' );
-		$googleSecret = get_option( 'wp_eazycv_google_api_secret' );
+        $this->apply_form = $mainForm;
 
-		if ( empty( $googleKey ) || empty( $googleSecret ) ) {
-			return '<div class="eazy-error">' . __( 'Er is geen CAPTCHA ingesteld.' ) . '</div>';
-		}
+        $googleKey = get_option('wp_eazycv_google_api_key');
+        $googleSecret = get_option('wp_eazycv_google_api_secret');
 
-		try {
-			$formSettings = $this->api->get( 'connectivity/public-forms/' . $mainForm );
-		} catch ( Exception $exception ) {
-			return '<div class="eazy-error">' . __( 'Er is een fout inschrijfformulier ingesteld.' ) . '</div>';
-		}
-		if ( empty( $formSettings['settings'] ) ) {
-			return '<div class="eazy-error">' . __( 'Er is geen inschrijfformulier ingesteld.' ) . '</div>';
-		}
-		$form         = $formSettings;
-		$formSettings = $formSettings['settings'];
+        if (empty($googleKey) || empty($googleSecret)) {
+            return '<div class="eazy-error">' . __('Er is geen CAPTCHA ingesteld.') . '</div>';
+        }
 
-		//check if the form is submitted
-		$newApplication = [];
-		if ( ! empty( $_POST ) ) {
-			$newApplication = $_POST;
-			if ( ! empty( $_FILES ) ) {
-				$newApplication['files'] = $_FILES;
-			}
+        try {
+            $formSettings = $this->api->get('connectivity/public-forms/' . $mainForm);
+        } catch (Exception $exception) {
+            return '<div class="eazy-error">' . __('Er is een fout inschrijfformulier ingesteld.') . '</div>';
+        }
+        if (empty($formSettings['settings'])) {
+            return '<div class="eazy-error">' . __('Er is geen inschrijfformulier ingesteld.') . '</div>';
+        }
+        $form = $formSettings;
+        $formSettings = $formSettings['settings'];
 
-			$success = $this->performApply( $newApplication );
-			if ( $success == 'Error' ) {
-				$url = current_location() . '?success=false';
+        //otherwise render the applicaiton form
+        $this->lists = $this->api->get('lists');
+        $this->licence = $this->api->get('licence');
+        $legal_stuff = $this->api->get('legal-info');
 
-				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, neem contact met ons op.' ) . '</div>';
-			} elseif ( $success == 'Error-Captcha' ) {
-				return '<div class="eazy-error">' . __( 'Uw inschrijving is helaas niet verwerkt, ben je een robot?' ) . '</div>';
-			} else {
-				return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
-			}
-		}
+        $html = '';
 
-		//otherwise render the applicaiton form
-		$this->lists   = $this->api->get( 'lists' );
-		$this->licence = $this->api->get( 'licence' );
-		$legal_stuff   = $this->api->get( 'legal-info' );
+        //stop1
 
-		$html = '';
+        if (isset($_GET['success'])) {
 
-		if ( ! empty( $this->job ) ) {
-			$label = ! empty( $this->atts['title_apply'] ) ? $this->atts['title_apply'] : '';
-			if ( ! empty( $label ) ) {
-				$html = '<h2 class="eazycv-job-view-h2">' . $label . ' ' . $this->job['original_functiontitle'] . '</h2>';
-			}
-		} else {
-			$label = ! empty( $this->atts['title_open'] ) ? $this->atts['title_open'] : '';
-			if ( ! empty( $label ) ) {
-				$html = '<h2 class="eazycv-job-view-h2">' . $label . '</h2>';
-			}
+            if ($_GET['success'] == 'true') {
+                return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
+            }
+            if ($_GET['success'] == 'captcha') {
+                $html .= '<div class="eazy-error">Oeps, de anti-robot validatie is niet gelukt... Probeer het formulier nog eens te versturen.</div>';
+            } else {
+                $html .= '<div class="eazy-error">';
+                $html .= 'Oeps, er is iets mis gegaan... Excuses voor het ongemak. Probeer het nog een keer.';
+                $html .= '</div>';
 
-		}
-		$html .= '
+            }
+        }
+
+
+        if (!empty($this->job)) {
+            $label = !empty($this->atts['title_apply']) ? $this->atts['title_apply'] : '';
+            if (!empty($label)) {
+                $html = '<h2 class="eazycv-job-view-h2">' . $label . ' ' . $this->job['original_functiontitle'] . '</h2>';
+            }
+        } else {
+            $label = !empty($this->atts['title_open']) ? $this->atts['title_open'] : '';
+            if (!empty($label)) {
+                $html = '<h2 class="eazycv-job-view-h2">' . $label . '</h2>';
+            }
+
+        }
+        $html .= '
 
 <div class="eazycv-form">
 <div class="eazy-error" id="eazy-from-apply-error" style="display:none;"></div>
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
-		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
+		<form method="post" id="eazycv-apply-form" class="validate" action="/eazycv-process-subscription" enctype="multipart/form-data">
+  			<input type="hidden" name="eazy-url" value="' . strtok(current_location(), '?') . '">
   			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
   			<input type="hidden" name="subscription_form_id" value="' . $this->apply_form . '">
   			<input type="hidden" id="eazycv-apply-job_id"  name="job_id" value="' . $this->job['id'] . '">
   			';
 
-		foreach ( $formSettings['fields'] as $field ) {
+        foreach ($formSettings['fields'] as $field) {
 
-			if ( $field['name'] == 'type' ) {
-				$html .= $this->formType( $field );
-			} elseif ( $field['name'] == 'gender' ) {
-				$html .= $this->gender( $field );
-			} elseif ( in_array( $field['name'], [ 'cv_document', 'cv_document_tk', 'picture', 'attachment1', 'attachment2', 'attachment3' ] ) ) {
-				$html .= $this->fileUpload( $field );
-			} elseif ( in_array( $field['name'], [ 'birth_date', 'available_from', 'available_to' ] ) ) {
-				$html .= $this->dateField( $field );
-			} elseif ( in_array( $field['name'], [ 'motivation', 'description' ] ) ) {
-				$html .= $this->textarea( $field );
-			} elseif ( $field['name'] == 'connect_through' ) {
-				$html .= $this->connectThrough( $field );
-			} else {
-				$html .= $this->textField( $field );
-			}
-		}
+            if ($field['name'] == 'type') {
+                $html .= $this->formType($field);
+            } elseif ($field['name'] == 'gender') {
+                $html .= $this->gender($field);
+            } elseif (in_array($field['name'], ['cv_document', 'cv_document_tk', 'picture', 'attachment1', 'attachment2', 'attachment3'])) {
+                $html .= $this->fileUpload($field);
+            } elseif (in_array($field['name'], ['birth_date', 'available_from', 'available_to'])) {
+                $html .= $this->dateField($field);
+            } elseif (in_array($field['name'], ['motivation', 'description'])) {
+                $html .= $this->textarea($field);
+            } elseif ($field['name'] == 'connect_through') {
+                $html .= $this->connectThrough($field);
+            } else {
+                $html .= $this->textField($field);
+            }
+        }
 
-		$html .= $this->gdpr( $legal_stuff );
+        $html .= $this->gdpr($legal_stuff);
 
-		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __( 'Submit' ) . '">';
+        $html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __('Submit') . '">';
 
-		$html .= '</form></div>
+        $html .= '</form></div>
 <div id="eazycv-wait-modal" class="eazycv-modal">Een moment geduld, uw sollicitatie wordt verwerkt.</div>
 			';
 
-		return $html;
-	}
+        return $html;
+    }
 
 
-	/**
-	 * @param $legal_stuff
-	 *
-	 * @return string
-	 */
-	public function gdpr( $legal_stuff ) {
+    /**
+     * @param $legal_stuff
+     *
+     * @return string
+     */
+    public function gdpr($legal_stuff)
+    {
 
-		$html = '';
-		if ( ! empty( $legal_stuff['gdpr_candidate']['content'] ) ) {
+        $html = '';
+        if (!empty($legal_stuff['gdpr_candidate']['content'])) {
 
-			$html .= '<p class="eazycv-gdpr">
+            $html .= '<p class="eazycv-gdpr">
                     <label for="field-gdpr">
                         <input type="checkbox" id="eazycv-field-gdpr" data-eazycv-required="accept_gdpr_version"
                                name="accept_gdpr_version"
                                value="' . $legal_stuff['gdpr_candidate']['version_nr'] . '"/>
                              
-                        <a href="#" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . __( 'Ik ga akkoord met de privacy voowaarden & algemene voorwaarden' ) . '</a>
+                        <a href="#" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . __('Ik ga akkoord met de privacy voowaarden & algemene voorwaarden') . '</a>
                     </label>
                 </p>';
-			$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_gdpr_version">U moet akkoord gaan met de voorwaarden.</div>';
+            $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_gdpr_version">U moet akkoord gaan met de voorwaarden.</div>';
 
-			$html .= '
+            $html .= '
 			<div id="eazycv-gdpr-modal" class="eazycv-modal">
-				<h2  class="eazycv-h2-gdpr-heading">' . __( 'Privacy & algemene voorwaarden' ) . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
+				<h2  class="eazycv-h2-gdpr-heading">' . __('Privacy & algemene voorwaarden') . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
 			
-				    <h4 class="eazycv-h4-privacy-heading">' . __( 'Privacy voorwaarden' ) . '</h4>
+				    <h4 class="eazycv-h4-privacy-heading">' . __('Privacy voorwaarden') . '</h4>
 				    <div class="eazycv-h4-privacy-p">' . $legal_stuff['gdpr_candidate']['content'] . '</div>
 				    <Br />
-				    <h4 class="eazycv-h4-terms-heading">' . __( 'Algemene voorwaarden' ) . '</h4>
+				    <h4 class="eazycv-h4-terms-heading">' . __('Algemene voorwaarden') . '</h4>
 				    <div class="eazycv-h4-terms-p">' . $legal_stuff['terms_candidate']['content'] . '</div>
 				  	<div class="eazycv-modal-footer"><hr />
-				   	 <button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __( 'Ik ga akkoord' ) . '</button>
+				   	 <button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __('Ik ga akkoord') . '</button>
 					</div> 
 			</div>';
-		}
+        }
 
 
-		return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function textField( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
-		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function textField($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>' . PHP_EOL;
+        $html .= '<input type="text" id="eazycv-field-' . sanitize_title($field['name']) . '" name="' . $field['name'] . '"';
 
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-text" data-eazycv-required="' . sanitize_title( $field['name'] ) . '" />';
-		} else {
-			$html .= ' class="eazycv-field eazycv-text" />';
-		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>' . PHP_EOL;
-
-
-		if ( $field['name'] == 'email' ) {
-			$html .= '<div id="eazycv-ajax-email-error"></div>';
-		}
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-text" data-eazycv-required="' . sanitize_title($field['name']) . '" />';
+        } else {
+            $html .= ' class="eazycv-field eazycv-text" />';
+        }
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>' . PHP_EOL;
 
 
-		return $html;
-	}
-
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function fileUpload( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
-		$html .= '<div class="eazy-file-upload-wrapper" data-text="Selecteer ' . $field['label'] . '">';
-		$html .= '<input type="file" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
+        if ($field['name'] == 'email') {
+            $html .= '<div id="eazycv-ajax-email-error"></div>';
+        }
 
 
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-file" data-eazycv-required="' . sanitize_title( $field['name'] ) . '"  />';
+        return $html;
+    }
 
-		} else {
-			$html .= ' class="eazycv-field eazycv-file" />';
-		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function fileUpload($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>' . PHP_EOL;
+        $html .= '<div class="eazy-file-upload-wrapper" data-text="Selecteer ' . $field['label'] . '">';
+        $html .= '<input type="file" id="eazycv-field-' . sanitize_title($field['name']) . '" name="' . $field['name'] . '"';
+
+
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-file" data-eazycv-required="' . sanitize_title($field['name']) . '"  />';
+
+        } else {
+            $html .= ' class="eazycv-field eazycv-file" />';
+        }
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>
 		</div>' . PHP_EOL;
 
-		return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function dateField( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
-		$html .= '<input type="text" id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function dateField($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>' . PHP_EOL;
+        $html .= '<input type="text" id="eazycv-field-' . sanitize_title($field['name']) . '" name="' . $field['name'] . '"';
 
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-date" data-eazycv-required="' . sanitize_title( $field['name'] ) . '" />';
-		} else {
-			$html .= ' class="eazycv-field eazycv-date" />';
-		}
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>' . PHP_EOL;
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-date" data-eazycv-required="' . sanitize_title($field['name']) . '" />';
+        } else {
+            $html .= ' class="eazycv-field eazycv-date" />';
+        }
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>' . PHP_EOL;
 
-		return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function textarea( $field ) {
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function textarea($field)
+    {
 
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
-		$html .= '<textarea id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="' . $field['name'] . '"';
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>' . PHP_EOL;
+        $html .= '<textarea id="eazycv-field-' . sanitize_title($field['name']) . '" name="' . $field['name'] . '"';
 
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-textarea" data-eazycv-required="' . sanitize_title( $field['name'] ) . '">';
-		} else {
-			$html .= ' class="eazycv-field eazycv-textarea">';
-		}
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-textarea" data-eazycv-required="' . sanitize_title($field['name']) . '">';
+        } else {
+            $html .= ' class="eazycv-field eazycv-textarea">';
+        }
 
-		$html .= '</textarea>' . PHP_EOL;
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>' . PHP_EOL;
+        $html .= '</textarea>' . PHP_EOL;
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>' . PHP_EOL;
 
-		return $html;
+        return $html;
 
-	}
+    }
 
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function gender( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>' . PHP_EOL;
-		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="gender"';
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function gender($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>' . PHP_EOL;
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>' . PHP_EOL;
+        $html .= '<select id="eazycv-field-' . sanitize_title($field['name']) . '" name="gender"';
 
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-select"  data-eazycv-required="' . sanitize_title( $field['name'] ) . '" >' . PHP_EOL;
-		} else {
-			$html .= ' class="eazycv-field eazycv-select">' . PHP_EOL;
-		}
-		$html .= ' <option value="m">' . __( 'Male' ) . '</option>' . PHP_EOL;
-		$html .= ' <option value="f">' . __( 'Female' ) . '</option>' . PHP_EOL;
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-select"  data-eazycv-required="' . sanitize_title($field['name']) . '" >' . PHP_EOL;
+        } else {
+            $html .= ' class="eazycv-field eazycv-select">' . PHP_EOL;
+        }
+        $html .= ' <option value="m">' . __('Male') . '</option>' . PHP_EOL;
+        $html .= ' <option value="f">' . __('Female') . '</option>' . PHP_EOL;
 
-		$html .= '</select>' . PHP_EOL;
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>' . PHP_EOL;
-
-
-		return $html;
-	}
-
-	/**
-	 * Connected via source
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function connectThrough( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>';
-		$html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="eazycv-field-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . '</label>';
-		$html .= '<select id="eazycv-field-' . sanitize_title( $field['name'] ) . '" name="connect_through_id"';
-
-		if ( $field['required'] ) {
-			$html .= ' class="eazycv-field eazycv-select" data-eazycv-required="' . sanitize_title( $field['name'] ) . '">';
-		} else {
-			$html .= ' class="eazycv-field eazycv-select">';
-		}
-
-		foreach ( $this->lists['ConnectThrough'] as $key => $listItem ) {
-			$html .= ' <option value="' . $listItem['id'] . '">' . $listItem['name'] . '</option>';
-		}
-
-		$html .= '</select>';
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>';
+        $html .= '</select>' . PHP_EOL;
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>' . PHP_EOL;
 
 
-		return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * type of candidate
-	 *
-	 * @param $field
-	 *
-	 * @return string
-	 */
-	public function formType( $field ) {
-		$html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title( $field['name'] ) . '">';
-		$html .= '<label id="eazycv-label-for-' . sanitize_title( $field['name'] ) . '" for="field-' . sanitize_title( $field['label'] ) . '">' . $field['label'] . '</label>';
+    /**
+     * Connected via source
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function connectThrough($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<i class="' . $field['icon'] . ' eazycv-icon"></i>';
+        $html .= '<label class="eazycv-label" id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="eazycv-field-' . sanitize_title($field['name']) . '">' . $field['label'] . '</label>';
+        $html .= '<select id="eazycv-field-' . sanitize_title($field['name']) . '" name="connect_through_id"';
 
-		$html .= '<i class="' . $field['icon'] . ' prefix"></i>';
-		$html .= '<select id="field-' . sanitize_title( $field['label'] ) . '" name="type"  data-eazycv-required="' . sanitize_title( $field['name'] ) . '" class="validate">';
-		foreach ( $this->lists['LicenceTypes'] as $group => $items ) {
-			foreach ( $items as $onLic ) {
-				if ( $this->licence['customer']['licence_types'][ $onLic ] == true ) {
-					$html .= '<option value="' . $onLic . '"';
-					if ( $form['source']['auto_candidate_type'] == $onLic ) {
-						$html .= 'selected';
-					}
-				}
-				$html .= $onLic;
-				$html . '</option>';
-			}
-		}
-		$html .= '</select>';
-		$html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title( $field['name'] ) . '">' . $field['label'] . ' is verplicht</div>';
-		$html .= '</div>';
+        if ($field['required']) {
+            $html .= ' class="eazycv-field eazycv-select" data-eazycv-required="' . sanitize_title($field['name']) . '">';
+        } else {
+            $html .= ' class="eazycv-field eazycv-select">';
+        }
 
-		return $html;
-	}
+        foreach ($this->lists['ConnectThrough'] as $key => $listItem) {
+            $html .= ' <option value="' . $listItem['id'] . '">' . $listItem['name'] . '</option>';
+        }
+
+        $html .= '</select>';
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>';
 
 
-	/*
-	 * ggreat magic
-	 */
-	private function performApply( $postData ) {
+        return $html;
+    }
+
+    /**
+     * type of candidate
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    public function formType($field)
+    {
+        $html = '<div class="eazycv-form-group eazycv-wrapper-' . sanitize_title($field['name']) . '">';
+        $html .= '<label id="eazycv-label-for-' . sanitize_title($field['name']) . '" for="field-' . sanitize_title($field['label']) . '">' . $field['label'] . '</label>';
+
+        $html .= '<i class="' . $field['icon'] . ' prefix"></i>';
+        $html .= '<select id="field-' . sanitize_title($field['label']) . '" name="type"  data-eazycv-required="' . sanitize_title($field['name']) . '" class="validate">';
+        foreach ($this->lists['LicenceTypes'] as $group => $items) {
+            foreach ($items as $onLic) {
+                if ($this->licence['customer']['licence_types'][$onLic] == true) {
+                    $html .= '<option value="' . $onLic . '"';
+                    if ($form['source']['auto_candidate_type'] == $onLic) {
+                        $html .= 'selected';
+                    }
+                }
+                $html .= $onLic;
+                $html . '</option>';
+            }
+        }
+        $html .= '</select>';
+        $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-' . sanitize_title($field['name']) . '">' . $field['label'] . ' is verplicht</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
 
 
-		if ( ! Wp_EazyCV_DEBUG ) {
-
-			if ( ! isset( $postData['grepact'] ) ) {
-				return 'Error';
-			}
-
-			$response = file_get_contents( 'https://www.google.com/recaptcha/api/siteverify?secret=' . get_option( 'wp_eazycv_google_api_secret' ) . '&response=' . $postData['grepact'] . '&remoteip=' . $_SERVER['REMOTE_ADDR'] );
-			$resp     = json_decode( $response );
-
-			if ( ! $resp->success ) {
-				return 'Error-Captcha';
-			}
-		}
-
-		$attachments = [
-			'attachment1',
-			'attachment2',
-			'attachment3',
-		];
-		foreach ( $attachments as $attachmentName ) {
-			if ( isset( $postData['files'][ $attachmentName ] ) && ! empty( $postData['files'][ $attachmentName ]['tmp_name'] ) ) {
-				$file = $postData['files'][ $attachmentName ];
-
-				$source = file_get_contents( $postData['files'][ $attachmentName ]['tmp_name'] );
-
-				$imageFileType = strtolower( pathinfo( $postData['files'][ $attachmentName ]['name'], PATHINFO_EXTENSION ) );
-
-				if ( in_array( $imageFileType, [
-					'txt',
-					'pdf',
-					'doc',
-					'png',
-					'gif',
-					'jpg',
-					'docx'
-				] )
-				) {
-					$mimeType = [
-						'txt'  => 'application/text',
-						'pdf'  => 'application/pdf',
-						'doc'  => 'application/msword',
-						'png'  => 'image/png',
-						'jpg'  => 'image/jpg',
-						'gif'  => 'image/gif',
-						'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-					];
-					//resume addon
-					$postData['attachments'][] = [
-						'filename'  => $postData['files'][ $attachmentName ]['name'],
-						'mime_type' => $mimeType[ $imageFileType ],
-						'content'   => base64_encode( $source )
-					];
-				}
-
-				unset( $postData['files'][ $attachmentName ] );
-			}
-		}
-
-		if ( isset( $postData['files']['cv_document'] ) && ! empty( $postData['files']['cv_document']['tmp_name'] ) ) {
-
-			$file = $postData['files']['cv_document'];
-
-			$source = file_get_contents( $postData['files']['cv_document']['tmp_name'] );
-
-			$imageFileType = strtolower( pathinfo( $postData['files']['cv_document']['name'], PATHINFO_EXTENSION ) );
-
-			if ( in_array( $imageFileType, [
-				'txt',
-				'pdf',
-				'doc',
-				'docx'
-			] )
-			) {
-				$mimeType = [
-					'txt'  => 'application/text',
-					'pdf'  => 'application/pdf',
-					'doc'  => 'application/msword',
-					'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				];
-				//resume addon
-				$postData['resume']   = [
-					'filename'  => $postData['files']['cv_document']['name'],
-					'mime_type' => $mimeType[ $imageFileType ],
-					'content'   => base64_encode( $source )
-				];
-
-			}
-
-			unset( $postData['files']['cv_document'] );
-			$postData['useTextkernel'] = false;
-		}
-
-		if ( isset( $postData['files']['cv_document_tk'] ) && ! empty( $postData['files']['cv_document_tk']['tmp_name'] ) ) {
-
-			$file = $postData['files']['cv_document_tk'];
-
-			$source = file_get_contents( $postData['files']['cv_document_tk']['tmp_name'] );
-
-			$imageFileType = strtolower( pathinfo( $postData['files']['cv_document_tk']['name'], PATHINFO_EXTENSION ) );
-
-			if ( in_array( $imageFileType, [
-				'txt',
-				'pdf',
-				'doc',
-				'docx'
-			] )
-			) {
-				$mimeType = [
-					'txt'  => 'application/text',
-					'pdf'  => 'application/pdf',
-					'doc'  => 'application/msword',
-					'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				];
-
-				//resume addon
-				$postData['resume']   = [
-					'filename'  => $postData['files']['cv_document_tk']['name'],
-					'mime_type' => $mimeType[ $imageFileType ],
-					'content'   => base64_encode( $source )
-				];
-
-			}
-
-			unset( $postData['files']['cv_document_tk'] );
-			$postData['useTextkernel'] = true;
-		}
-
-		if ( isset( $postData['files']['avatar'] ) ) {
-
-			$file = $postData['files']['avatar'];
-
-			$source = file_get_contents( $postData['files']['avatar']['tmp_name'] );
-
-			$imageFileType = strtolower( pathinfo( $postData['files']['avatar']['name'], PATHINFO_EXTENSION ) );
-
-			if ( in_array( $imageFileType, [
-				'png',
-				'jpg',
-				'jpeg'
-			] )
-			) {
-				$mimeType = [
-					'png'  => 'image/png',
-					'jpg'  => 'image/jpg',
-					'jpeg' => 'image/jpeg',
-				];
-				//resume addon
-				$postData['avatar'] = [
-					'filename'  => $postData['files']['cv_document_tk']['name'],
-					'mime_type' => $mimeType[ $imageFileType ],
-					'content'   => base64_encode( $source )
-				];
-			}
-
-			unset( $postData['files']['avatar'] );
-		}
-
-		$userFields = [
-			'first_name',
-			'last_name',
-			'prefix',
-			'birth_date',
-			'gender',
-			'avatar',
-			'country'
-		];
-
-		foreach ( $userFields as $fieldName ) {
-			if ( isset( $postData[ $fieldName ] ) ) {
-				$postData['user'][ $fieldName ] = $postData[ $fieldName ];
-				unset( $postData[ $fieldName ] );
-			}
-		}
-
-		if ( ! isset( $postData['user']['gender'] ) ) {
-			$postData['user']['gender'] = 'm';
-		}
-
-		//$postData['subscription_form_id'] = $this->apply_form;
-		unset( $postData['files'] );
-		unset( $postData['grepact'] );
-
-
-		try {
-			$res = $this->api->post( 'candidates/signup', $postData );
-		} catch ( Exception $exception ) {
-			if(Wp_EazyCV_DEBUG){
-				dump($exception->getMessage());
-			}
-			return 'Error';
-		}
-
-		return 'Oke';
-	}
 }

@@ -10,21 +10,29 @@
 }
 
 .eazy-info {
+    border: solid 1px #00529B;
+    border-left: solid 4px #00529B;
     color: #00529B;
     background-color: #BDE5F8;
 }
 
 .eazy-success {
+    border: solid 1px #4F8A10;
+    border-left: solid 4px #4F8A10;
     color: #4F8A10;
     background-color: #DFF2BF;
 }
 
 .eazy-warning {
+    border: solid 1px #9F6000;
+    border-left: solid 4px #9F6000;
     color: #9F6000;
     background-color: #FEEFB3;
 }
 
 .eazy-error {
+    border: solid 1px #D8000C;
+    border-left: solid 4px #D8000C;
     color: #D8000C;
     background-color: #FFD2D2;
 }
@@ -34,9 +42,11 @@
     font-size: 2em;
     vertical-align: middle;
 }
+
 .eazycv-hidden {
-    display:none;
+    display: none;
 }
+
 /* The Modal (background) */
 
 .eazycv-modal {
