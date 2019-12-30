@@ -96,9 +96,20 @@ class Wp_EazyCV_Job_Search
             $html .= '<div class="eazycv-job-row-details">';
             $html .= '<div class="eazycv-job-row-reference">' . $job['reference'] . '</div>';
             $html .= '<div class="eazycv-job-row-created_at">' . date('d-m-Y', strtotime($job['created_at'])) . '</div>';
-            if (isset($job['address']['city'])) {
-                $html .= '<div class="eazycv-job-row-city">' . $job['address']['city'] . '</div>';
+
+
+            if (!empty($job['location_string'])) {
+                $html .= '<div class="eazycv-job-row-city">' .$job['location_string'];
+                if (!empty($job['default_distance'])) {
+                    $html .= '<div class="eazycv-job-row-distance">(&#177; ' .$job['default_distance'] . ' km)</div>';
+                }
+                $html .= '</div>';
+            } else {
+                if (!empty($job['address']['city'])) {
+                    $html .= '<div class="eazycv-job-row-city">' . $job['address']['city'] . '</div>';
+                }
             }
+
             $html .= '</div>';
             $html .= '<div class="eazycv-job-row-apply">';
             $html .= '<div class="eazycv-job-row-link-details"><a class="eazycv-link"  href="' . $url . '">' . __('Bekijk details') . '</a></div>';
