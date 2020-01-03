@@ -1,5 +1,11 @@
 {
-    "require": {
-        "viancen/eazycv-client": "dev-master"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/viancen/eazycv-client"
     }
+  ],
+  "require": {
+    "viancen/eazycv-client": "1.2.9"
+  }
 }
