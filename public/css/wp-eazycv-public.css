@@ -9,6 +9,30 @@
 
 }
 
+.eazycv-jobhead-labels {
+    display:inline-block;
+    width:150px;
+}
+.eazycv-form-group {
+    padding: 10px;
+}
+
+.eazycv-apply-button-top {
+    text-align: right;
+}
+.eazycv-apply-button-bottom {
+    text-align: right;
+}
+
+.eazycv-field {
+    display: block;
+    width: 100%;
+}
+
+.eazycv-select {
+    padding: 4px;
+}
+
 .eazy-info {
     border: solid 1px #00529B;
     border-left: solid 4px #00529B;
