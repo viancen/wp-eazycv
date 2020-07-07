@@ -72,21 +72,6 @@ class Wp_EazyCV_Apply
 
 		//stop1
 
-		if (isset($_GET['success'])) {
-
-			if ($_GET['success'] == 'true') {
-				return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
-			}
-			if ($_GET['success'] == 'captcha') {
-				$html .= '<div class="eazy-error">Oeps, de anti-robot validatie is niet gelukt... Probeer het formulier nog eens te versturen.</div>';
-			} else {
-				$html .= '<div class="eazy-error">';
-				$html .= 'Oeps, er is iets mis gegaan... Excuses voor het ongemak. Probeer het nog een keer.';
-				$html .= '</div>';
-
-			}
-		}
-
 		$html .= '<div class="eazycv-form">';
 		if (!empty($this->job)) {
 			$label = !empty($this->atts['title_apply']) ? $this->atts['title_apply'] : '';
@@ -102,26 +87,26 @@ class Wp_EazyCV_Apply
 
 
 			if (!empty($this->job['location_string'])) {
-				$html .= '<div class="eazycv-job-body-location-string"><span class="eazycv-jobhead-labels">'.__('Locatie').'</span> ' . $this->job['location_string'];
+				$html .= '<div class="eazycv-job-body-location-string"><span class="eazycv-jobhead-labels">' . __('Locatie') . '</span> ' . $this->job['location_string'];
 				if (!empty($this->job['default_distance'])) {
 					$html .= ' <span class="eazycv-job-body-distance">(&#177; ' . $this->job['default_distance'] . ' km)</span>';
 				}
 				$html .= '</div>';
 			}
 			if (!empty($this->job['address']['city'])) {
-				$html .= '<div class="eazycv-job-body-city"><span class="eazycv-jobhead-labels">'.__('Standplaats').'</span> ' . $this->job['address']['city'] . '</div>';
+				$html .= '<div class="eazycv-job-body-city"><span class="eazycv-jobhead-labels">' . __('Standplaats') . '</span> ' . $this->job['address']['city'] . '</div>';
 			}
 
 			if (!empty($this->job['discipline'])) {
-				$html .= '<div class="eazycv-job-body-discipline"><span class="eazycv-jobhead-labels">'.__('Vakgebied').'</span> ' . $this->job['discipline']['name'] . '</div>';
+				$html .= '<div class="eazycv-job-body-discipline"><span class="eazycv-jobhead-labels">' . __('Vakgebied') . '</span> ' . $this->job['discipline']['name'] . '</div>';
 			}
 
 			if (!empty($this->job['educations'])) {
 				$educs = [];
-				foreach($this->job['educations'] as $e){
+				foreach ($this->job['educations'] as $e) {
 					$educs[] = $e['name'];
 				}
-				$html .= '<div class="eazycv-job-body-education"><span class="eazycv-jobhead-labels">'.__('Opleidingsniveau').'</span> ' . implode(', ',$educs) . '</div>';
+				$html .= '<div class="eazycv-job-body-education"><span class="eazycv-jobhead-labels">' . __('Opleidingsniveau') . '</span> ' . implode(', ', $educs) . '</div>';
 			}
 
 		} else {
@@ -134,10 +119,17 @@ class Wp_EazyCV_Apply
 			$html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> Inschrijven </span> </div>';
 
 		}
+
+		$html .= '<div class="eazy-success eazycv-hidden" id="eazy-successful-application">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
+		$html .= '<div class="eazy-error eazycv-hidden"  id="eazy-error-application-captcha">Oeps, de anti-robot validatie is niet gelukt... Probeer het formulier nog eens te versturen.</div>';
+		$html .= '<div class="eazy-error eazycv-hidden" id="eazy-error-application">';
+		$html .= 'Oeps, er is iets mis gegaan... Excuses voor het ongemak. Probeer het nog een keer.';
+		$html .= '</div>';
+
 		$html .= '
 <div class="eazy-error" id="eazy-from-apply-error" style="display:none;"></div>
 <input type="hidden" value="' . $googleKey . '" id="eazycv-grekey">
-		<form method="post" id="eazycv-apply-form" class="validate" action="/eazycv-process-subscription" enctype="multipart/form-data">
+		<form method="post" id="eazycv-apply-form" class="validate" enctype="multipart/form-data">
   			<input type="hidden" name="eazy-url" value="' . strtok(current_location(), '?') . '">
   			<input type="hidden" class="eazymatch-active" name="grepact" value="" id="eazycv-greval">
   			<input type="hidden" name="subscription_form_id" value="' . $this->apply_form . '">
@@ -172,7 +164,8 @@ class Wp_EazyCV_Apply
 		$html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __('Submit') . '">';
 
 		$html .= '</form></div>
-<div id="eazycv-wait-modal" class="eazycv-modal">Een moment geduld, uw sollicitatie wordt verwerkt.</div>
+
+<div id="eazycv-wait-modal" class="eazycv-modal"><div class="eazy-centerd"><div class="lds-ring"><div></div><div></div><div></div><div></div></div> <br /><br />Een moment geduld, uw sollicitatie wordt verwerkt.</div></div> 
 			';
 
 		return $html;

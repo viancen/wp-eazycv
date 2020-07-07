@@ -2,7 +2,39 @@
     'use strict';
 
     $(function () {
+        function sendEazyData() {
+            const XHR = new XMLHttpRequest();
 
+            // Bind the FormData object and the form element
+            const FD = new FormData(document.getElementById('eazycv-apply-form'));
+
+            // Define what happens on successful data submission
+            XHR.addEventListener("load", function (event) {
+                let jsonResponse = JSON.parse(event.target.responseText);
+
+                if (jsonResponse.status == 'success') {
+                    $('#eazy-successful-application').removeClass('eazycv-hidden');
+                    document.getElementById('eazycv-apply-form').remove();
+                } else if (jsonResponse.status == 'captcha') {
+                    $('#eazy-error-application-captcha').removeClass('eazycv-hidden');
+                } else {
+                    $('#eazy-error-application').removeClass('eazycv-hidden');
+                }
+                $.featherlight.close();
+
+            });
+
+            // Define what happens in case of error
+            XHR.addEventListener("error", function (event) {
+                $('#eazy-error-application').removeClass('eazycv-hidden');
+            });
+
+            // Set up our request
+            XHR.open("POST", "/eazycv-process-subscription");
+
+            // The data sent is what the user provided in the form
+            XHR.send(FD);
+        }
 
         $(document).on('click', '#eazy-apply-submit-btn', function () {
 
@@ -41,7 +73,10 @@
                                 });
                                 $('#eazy-apply-submit-btn').prop('disabled', true);
                                 $('#eazycv-greval').val(token);
-                                $('#eazycv-apply-form').submit();
+
+
+                                sendEazyData();
+
                             });
                     });
 

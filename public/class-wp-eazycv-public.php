@@ -338,13 +338,14 @@ class Wp_EazyCV_Public
 
 				$success = $this->performApply($newApplication);
 				if ($success == 'Error') {
-					wp_redirect($refUrl . '?success=eazycv');
+					echo json_encode(['status' => 'error']);
 				} elseif ($success == 'Error-Captcha') {
-					wp_redirect($refUrl . '?success=captcha');
+					echo json_encode(['status' => 'captcha']);
 				} else {
-					wp_redirect($refUrl . '?success=true');
+					echo json_encode(['status' => 'success']);
 					//return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
 				}
+				die();
 			}
 		}
 
