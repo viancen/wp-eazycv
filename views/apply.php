@@ -170,7 +170,7 @@ class Wp_EazyCV_Apply
     {
 
         $html = '';
-        if (!empty($legal_stuff['gdpr_candidate']['content'])) {
+        if (!empty($legal_stuff['gdpr_candidate']['content']) && $legal_stuff['gdpr_candidate']['enabled'] == 1) {
             $html .= '<div class="eazycv-form-group eazycv-wrapper-gdpr">';
             $html .= '<div class="eazycv-gdpr">
                     <label for="field-gdpr">
@@ -178,22 +178,45 @@ class Wp_EazyCV_Apply
                                name="accept_gdpr_version"
                                value="' . $legal_stuff['gdpr_candidate']['version_nr'] . '"/>
                              
-                        <a href="javascript:void(0);" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . __('Ik ga akkoord met de privacy voowaarden & algemene voorwaarden') . '</a>
+                        <a href="javascript:void(0);" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-gdpr-modal"> ' . $legal_stuff['gdpr_candidate']['link_text'] . '</a>
                     </label>
                 </div>';
 
-            $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_gdpr_version">U moet akkoord gaan met de voorwaarden.</div>';
+            $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_gdpr_version">U moet akkoord gaan met onze voorwaarden.</div>';
 
             $html .= '
 			<div id="eazycv-gdpr-modal" class="eazycv-modal">
-				<h2  class="eazycv-h2-gdpr-heading">' . __('Privacy & algemene voorwaarden') . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
-				    <h4 class="eazycv-h4-privacy-heading">' . __('Privacy voorwaarden') . '</h4>
+				<h2  class="eazycv-h2-gdpr-heading">' . __('Privacystatement') . ': ' . $legal_stuff['gdpr_candidate']['version_nr'] . '</h2>
+				    
 				    <div class="eazycv-h4-privacy-p">' . $legal_stuff['gdpr_candidate']['content'] . '</div>
-				    <Br />
-				    <h4 class="eazycv-h4-terms-heading">' . __('Algemene voorwaarden') . '</h4>
-				    <div class="eazycv-h4-terms-p">' . $legal_stuff['terms_candidate']['content'] . '</div>
+		
 				  	<div class="eazycv-modal-footer"><hr />
 				   	 <button id="accept-gdpr-modal-btn" type="button" class="eazycv-btn">' . __('Ik ga akkoord') . '</button>
+					</div> 
+			</div>';
+            $html .= '</div>';
+        }
+        if (!empty($legal_stuff['terms_candidate']['content']) && $legal_stuff['terms_candidate']['enabled'] == 1) {
+            $html .= '<div class="eazycv-form-group terms">';
+            $html .= '<div class="eazycv-terms">
+                    <label for="field-terms">
+                        <input type="checkbox" id="eazycv-field-terms" data-eazycv-required="accept_terms_version"
+                               name="accept_terms_version"
+                               value="' . $legal_stuff['terms_candidate']['version_nr'] . '"/>
+                             
+                        <a href="javascript:void(0);" data-featherlight-variant="eazycv-lightbox" data-featherlight="#eazycv-terms-modal"> ' . $legal_stuff['terms_candidate']['link_text'] . '</a>
+                    </label>
+                </div>';
+
+            $html .= '<div class="eazycv-apply-error eazycv-hidden eazy-error" id="eazycv-error-accept_terms_version">U moet akkoord gaan met onze voorwaarden.</div>';
+
+            $html .= '
+			<div id="eazycv-terms-modal" class="eazycv-modal">
+				<h2  class="eazycv-h2-terms-heading">' . __('Algemene voorwaarden') . ': ' . $legal_stuff['terms_candidate']['version_nr'] . '</h2>
+				   
+				    <div class="eazycv-h4-terms-p">' . $legal_stuff['terms_candidate']['content'] . '</div>
+				  	<div class="eazycv-modal-footer"><hr />
+				   	 <button id="accept-terms-modal-btn" type="button" class="eazycv-btn">' . __('Ik ga akkoord') . '</button>
 					</div> 
 			</div>';
             $html .= '</div>';

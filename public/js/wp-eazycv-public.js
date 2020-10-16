@@ -83,6 +83,10 @@
                 }
             });
 
+        }).on('click', '#accept-terms-modal-btn', function () {
+            $('#eazycv-field-terms').prop('checked', true);
+            var current = $.featherlight.current();
+            current.close();
         }).on('click', '#accept-gdpr-modal-btn', function () {
             $('#eazycv-field-gdpr').prop('checked', true);
             var current = $.featherlight.current();
