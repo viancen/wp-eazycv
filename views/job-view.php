@@ -5,15 +5,18 @@ class Wp_EazyCV_Job
 
 	public $job = null;
 	private $api = null;
+	private $jobDetails = null;
 
 	function __construct($job, $api)
 	{
 		$this->api = $api;
+        $this->jobDetails = new Wp_EazyCV_Jobs();
 		$this->job = $job;
 	}
 
 	public function render()
 	{
+
 
 		//ander inschrijfjformulier meegegeven?
 		$mainForm = '';
@@ -35,38 +38,33 @@ class Wp_EazyCV_Job
 
 		$urlBack = get_site_url() . '/' . get_option('wp_eazycv_jobsearch_page');
 		$html = '<div class="eazycv-job-body eazycv-job-' . $this->job['type'] . '">';
-		if (!empty($this->job['cover'])) {
-			$html .= '<div class="eazycv-job-cover"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $this->job['cover'] . '?bust=' . rand(0, 292992) . '" alt="' . $this->job['functiontitle'] . '" /></div>';
+
+        $publishedFields = $this->jobDetails->getFieldData($this->job);
+
+		if (!empty($publishedFields['cover'])) {
+			$html .= '<div class="eazycv-job-cover"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['cover']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $this->job['functiontitle'] . '" /></div>';
+			unset($publishedFields['cover']);
 		}
+
 		$html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> (' . $this->job['reference'] . ') ' . $this->job['functiontitle'] . ' </span> </div>';
 		$html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
+        if (!empty($publishedFields['logo'])) {
+            $html .= '<div class="eazycv-job-logo"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['logo']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $this->job['functiontitle'] . '" /></div>';
+            unset($publishedFields['logo']);
+        }
+
+		foreach ($publishedFields as $fieldId => $field) {
+            $html .= '<div class="eazycv-view-job-item-row eazycv-published-item eazycv-job-row-item-' . $fieldId . '">
+                <span class="eazycv-jobhead-labels eazycv-job-row-item-' . $fieldId . '-label">' . $field['label'] . '</span> ' .
+                $field['value'];
+            $html .= '</div>';
+        }
 
 
-		if (!empty($this->job['location_string'])) {
-			$html .= '<div class="eazycv-job-body-location-string"><span class="eazycv-jobhead-labels">' . __('Locatie') . '</span> ' . $this->job['location_string'];
-			if (!empty($this->job['default_distance'])) {
-				$html .= ' <span class="eazycv-job-body-distance">(&#177; ' . $this->job['default_distance'] . ' km)</span>';
-			}
-			$html .= '</div>';
-		}
-		if (!empty($this->job['address']['city'])) {
-			$html .= '<div class="eazycv-job-body-city"><span class="eazycv-jobhead-labels">' . __('Standplaats') . '</span> ' . $this->job['address']['city'] . '</div>';
-		}
-
-		if (!empty($this->job['discipline'])) {
-			$html .= '<div class="eazycv-job-body-discipline"><span class="eazycv-jobhead-labels">' . __('Vakgebied') . '</span> ' . $this->job['discipline']['name'] . '</div>';
-		}
-
-		if (!empty($this->job['educations'])) {
-			$educs = [];
-			foreach ($this->job['educations'] as $e) {
-				$educs[] = $e['name'];
-			}
-			$html .= '<div class="eazycv-job-body-education"><span class="eazycv-jobhead-labels">' . __('Opleidingsniveau') . '</span> ' . implode(', ', $educs) . '</div>';
-		}
 
 
-		$html .= '<div class="eazycv-apply-button-top">' . $applyButton . '</div>';
+
+        $html .= '<div class="eazycv-apply-button-top">' . $applyButton . '</div>';
 		foreach ($this->job['texts'] as $kk => $text) {
 
 			if (isset($text['content'])) {

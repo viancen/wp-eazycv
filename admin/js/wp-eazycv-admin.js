@@ -33,13 +33,16 @@
         $.ajax({
             type: "GET",
             url: 'https://api.eazycv.cloud',
-          //  data: {q: idiom},
+            //  data: {q: idiom},
             async: true,
-           // dataType: 'jsonp',   //you may use jsonp for cross origin request
+            // dataType: 'jsonp',   //you may use jsonp for cross origin request
             crossDomain: true,
             success: function (data, status, xhr) {
-              console.log(xhr.getResponseHeader);
+                console.log(xhr.getResponseHeader);
             }
         });
+    }).on('change', '#eazycv-job-field-selector', function () {
+        var objectData = JSON.stringify($(this).val());
+        $('#wp_eazycv_display_job_fields').val(objectData);
     });
 })(jQuery);

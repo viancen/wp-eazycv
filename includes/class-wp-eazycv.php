@@ -138,7 +138,14 @@ class wp_eazycv {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-eazycv-i18n.php';
 
-		/**
+
+        /**
+         * The class responsible for orchestrating the actions and filters of the
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wp-eazycv-jobs.php';
+
+        /**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-eazycv-admin.php';
@@ -246,6 +253,7 @@ class wp_eazycv {
 	public function get_wp_eazycv() {
 		return $this->wp_eazycv;
 	}
+
 
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
