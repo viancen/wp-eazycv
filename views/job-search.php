@@ -93,7 +93,9 @@ class Wp_EazyCV_Job_Search
             $html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
 
             $publishedFields = $this->jobDetails->getFieldData($job);
-
+            if (!empty($publishedFields['cover'])) {
+                unset($publishedFields['cover']);
+            }
             if (!empty($publishedFields['logo'])) {
                 $html .= '<div class="eazycv-search-job-item-row eazycv-published-item eazycv-job-row-item-logo">';
                 $html .= '<div class="eazycv-job-logo"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['logo']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $job['functiontitle'] . '" /></div>';

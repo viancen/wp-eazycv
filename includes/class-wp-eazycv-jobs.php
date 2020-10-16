@@ -4,12 +4,6 @@ class Wp_EazyCV_Jobs
 {
     public $publishedFields = [
         'id' => 'ID',
-        'created_at' => 'Aangemaakt op',
-        'updated_at' => 'Geupdate op',
-        'start_publish_date' => 'Publicatie datum (van)',
-        'end_publish_date' => 'Publicatie datum (tot)',
-        'start_at' => 'Startdatum',
-        'end_at' => 'Einddatum',
         'refererence' => 'Referentiecode',
         'functiontitle' => 'Functietitel (publicatie)',
         'original_functiontitle' => 'Originele functietitel',
@@ -26,8 +20,8 @@ class Wp_EazyCV_Jobs
         'education' => 'Opleidingsniveau(s)',
         'discipline_id' => 'Vakgebied',
         'job_category_id' => 'Categorie',
-        'years_experience_min' => 'Werkervaring (jaren) vanaf',
-        'years_experience_max' => 'Werkervaring (jaren) tot',
+        'years_experience_min' => 'Jaren werkervaring (vanaf)',
+        'years_experience_max' => 'Jaren werkervaring (tot)',
         'salary_from' => 'Salaris vanaf',
         'salary_to' => 'Salaris tot',
         'salary_text' => 'Salaris toelichting',
@@ -39,6 +33,12 @@ class Wp_EazyCV_Jobs
         'hours_text' => 'Uren toelichting',
         'contract_type' => 'Contract type',
         'contract_text' => 'Contract toelichting',
+        'created_at' => 'Aangemaakt op',
+        'updated_at' => 'Geupdate op',
+        'start_publish_date' => 'Publicatie datum (van)',
+        'end_publish_date' => 'Publicatie datum (tot)',
+        'start_at' => 'Startdatum',
+        'end_at' => 'Einddatum',
     ];
 
 
@@ -115,7 +115,7 @@ class Wp_EazyCV_Jobs
                 } elseif ($fieldName == 'cover' || $fieldName == 'logo' ) {
                     //<a href=' . $ed['url'] . ' target="_blank">
                     $result[$fieldName] = [
-                        'label' => $this->publishedFields['url'],
+                        'label' => $this->publishedFields[$fieldName],
                         'value' => $job[$fieldName]
                     ];
                 } elseif ($fieldName == 'url') {
