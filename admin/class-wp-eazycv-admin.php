@@ -365,10 +365,10 @@ class Wp_EazyCV_Admin
         $currentSelectionArray = $eazy_jobs->get_published_fields();
 
         ?>
-        <input  type="hidden"  class="eazycv-admin-input"
+        <input  type="hidden" class="eazycv-admin-input"
                name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
-                value="<?php echo get_option($this->option_name . "_" . $fields['field']); ?>">
+                value='<?php echo get_option($this->option_name . "_" . $fields['field']); ?>'>
 
         <select type="text" class="eazycv-admin-select" multiple style="height:250px;" id="eazycv-job-field-selector">
             <?php

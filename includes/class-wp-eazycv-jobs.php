@@ -14,7 +14,7 @@ class Wp_EazyCV_Jobs
         'deadline_at' => 'Deadline',
         'logo' => 'Logo',
         'cover' => 'Cover',
-        'description' => 'Originele vacature text',
+        //'description' => 'Originele vacature text',
         'address' => 'Standplaats',
         'level_id' => 'Niveau',
         'education' => 'Opleidingsniveau(s)',
@@ -22,12 +22,15 @@ class Wp_EazyCV_Jobs
         'job_category_id' => 'Categorie',
         'years_experience_min' => 'Jaren werkervaring (vanaf)',
         'years_experience_max' => 'Jaren werkervaring (tot)',
+        'salary' => 'Salaris',
         'salary_from' => 'Salaris vanaf',
         'salary_to' => 'Salaris tot',
         'salary_text' => 'Salaris toelichting',
+        'rate' => 'Tarief',
         'rate_from' => 'Tarief vanaf',
         'rate_to' => 'Tarief tot',
         'rate_text' => 'Tarief toelichting',
+
         'hours_from' => 'Aantal uur van',
         'hours_to' => 'Aantal uur tot',
         'hours_text' => 'Uren toelichting',
@@ -53,6 +56,9 @@ class Wp_EazyCV_Jobs
         if (!empty($currentSelection)) {
             $currentSelectionArray = json_decode($currentSelection, true);
         }
+        if (empty($currentSelectionArray)) {
+            $currentSelectionArray = [];
+        }
         return $currentSelectionArray;
     }
 
@@ -71,13 +77,44 @@ class Wp_EazyCV_Jobs
 
         $result = [];
         $enabledFields = $this->get_published_fields();
+        $job['rate'] = '';
+        $job['salary'] = '';
+
         foreach ($job as $fieldName => $fieldValue) {
+
             if (in_array($fieldName, $enabledFields)) {
+
                 if (strstr($fieldName, '_date') || substr($fieldName, -3) == '_at') {
                     if (!empty($job[$fieldName])) {
                         $result[$fieldName] = [
                             'label' => $this->publishedFields[$fieldName],
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . date('d-m-Y', strtotime($fieldValue)) . '</span>'
+                        ];
+                    }
+                } elseif (in_array($fieldName, ['rate', 'salary'])) {
+
+                    $fv = '';
+                    if (!empty($job[$fieldName . '_from'])) {
+                        $fv = '&euro; ' . number_format($job[$fieldName . '_from'], 2, ',', '.');
+                    }
+                    if (!empty($job[$fieldName . '_to'])) {
+                        if (!empty($fv)) {
+                            $fv .= ' - ';
+                        }
+                        $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 2, ',', '.');
+                    }
+
+                    if (!empty($fv)) {
+                        $result[$fieldName] = [
+                            'label' => $this->publishedFields[$fieldName],
+                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $fv . '</span>'
+                        ];
+                    }
+                } elseif (in_array($fieldName, ['salary_from', 'salary_to', 'rate_from', 'rate_to'])) {
+                    if (!empty($job[$fieldName])) {
+                        $result[$fieldName] = [
+                            'label' => $this->publishedFields[$fieldName],
+                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">&euro; ' . number_format($fieldValue, 2, ',', '.') . '</span>'
                         ];
                     }
                 } elseif ($fieldName == 'contract_type') {
@@ -112,7 +149,7 @@ class Wp_EazyCV_Jobs
                             'value' => $list
                         ];
                     }
-                } elseif ($fieldName == 'cover' || $fieldName == 'logo' ) {
+                } elseif ($fieldName == 'cover' || $fieldName == 'logo') {
                     //<a href=' . $ed['url'] . ' target="_blank">
                     $result[$fieldName] = [
                         'label' => $this->publishedFields[$fieldName],

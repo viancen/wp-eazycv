@@ -59,6 +59,7 @@ class Wp_EazyCV_Job_Search
         ]);
 
         if (empty($jobs['data'])) {
+            if (!isset($formSettings['no_results_message'])) $formSettings['no_results_message'] = '';
             return '<div class="eazy-no-job-results">' . $formSettings['no_results_message'] . '</div>';
         }
         $html = '';
@@ -119,10 +120,6 @@ class Wp_EazyCV_Job_Search
                     $field['value'];
                 $html .= '</div>';
             }
-
-            $html .= '<div class="eazycv-job-row-reference"><span class="eazycv-jobhead-labels">' . __('Referentie') . '</span> ' . $job['reference'] . '</div>';
-            $html .= '<div class="eazycv-job-row-created_at"><span class="eazycv-jobhead-labels">' . __('Geplaatst') . '</span> ' . date('d-m-Y', strtotime($job['created_at'])) . '</div>';
-
 
             $html .= '</div>';
             $html .= '<div class="eazycv-job-row-apply">';

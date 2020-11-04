@@ -43,6 +43,8 @@
         });
     }).on('change', '#eazycv-job-field-selector', function () {
         var objectData = JSON.stringify($(this).val());
+
         $('#wp_eazycv_display_job_fields').val(objectData);
     });
+
 })(jQuery);
