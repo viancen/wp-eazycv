@@ -28,13 +28,16 @@ class Wp_EazyCV_Jobs
         'salary_from' => 'Salaris vanaf',
         'salary_to' => 'Salaris tot',
         'salary_text' => 'Salaris toelichting',
+
         'rate' => 'Tarief',
         'rate_from' => 'Tarief vanaf',
         'rate_to' => 'Tarief tot',
         'rate_text' => 'Tarief toelichting',
 
+        'hours' => 'Uren',
         'hours_from' => 'Aantal uur van',
         'hours_to' => 'Aantal uur tot',
+
         'hours_text' => 'Uren toelichting',
         'contract_type' => 'Contractvorm',
         'contract_text' => 'Contract toelichting',
@@ -117,17 +120,26 @@ class Wp_EazyCV_Jobs
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . date('d-m-Y', strtotime($fieldValue)) . '</span>'
                         ];
                     }
-                } elseif (in_array($fieldName, ['rate', 'salary'])) {
+                } elseif (in_array($fieldName, ['rate', 'hours', 'salary'])) {
 
                     $fv = '';
                     if (!empty($job[$fieldName . '_from'])) {
-                        $fv = '&euro; ' . number_format($job[$fieldName . '_from'], 2, ',', '.');
+                        if ($fieldName == 'hours') {
+                            $fv = number_format($job[$fieldName . '_from'], 0, '', '.');
+                        } else {
+                            $fv = '&euro; ' . number_format($job[$fieldName . '_from'], 0, '', '.');
+                        }
                     }
+
                     if (!empty($job[$fieldName . '_to'])) {
                         if (!empty($fv)) {
                             $fv .= ' - ';
                         }
-                        $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 2, ',', '.');
+                        if ($fieldName == 'hours') {
+                            $fv .= number_format($job[$fieldName . '_from'], 0, '', '.');
+                        } else {
+                            $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 2, ',', '.');
+                        }
                     }
 
                     if (!empty($fv)) {
