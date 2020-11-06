@@ -138,7 +138,7 @@ class Wp_EazyCV_Jobs
                         if ($fieldName == 'hours') {
                             $fv .= number_format($job[$fieldName . '_from'], 0, '', '.');
                         } else {
-                            $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 2, ',', '.');
+                            $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 0, '', '.');
                         }
                     }
 
