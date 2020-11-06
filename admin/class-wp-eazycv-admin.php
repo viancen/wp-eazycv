@@ -75,6 +75,7 @@ class Wp_EazyCV_Admin
         $this->plugin_settings_tabs['jobs'] = 'Jobs';
         $this->plugin_settings_tabs['styling'] = 'Styling';
         $this->plugin_settings_tabs['scripting'] = 'Scripting';
+        $this->plugin_settings_tabs['other'] = 'Other';
 
         //check connection
         $serviceUrl = get_option('wp_eazycv_service_url');
@@ -312,6 +313,45 @@ class Wp_EazyCV_Admin
         register_setting($this->plugin_name . "-general_section", $this->option_name . "_apikey");
     }
 
+    private function register_other_options()
+    {
+        $custom_labels = get_option('wp_eazycv_custom_labels');
+        if (empty($custom_labels)) {
+
+            //$currentSelection = explode(',', $currentSelection);
+            $eazy_jobs = new Wp_EazyCV_Jobs();
+            $custom_labels = json_encode($eazy_jobs->publishedFields, JSON_PRETTY_PRINT);
+
+            update_option('wp_eazycv_custom_labels', $custom_labels);
+        }
+        $global_labels = get_option('wp_eazycv_global_labels');
+        if (empty($global_labels)) {
+
+            //$currentSelection = explode(',', $currentSelection);
+            $baseArray = [
+                'contract_type' => [
+                    'permanent' => 'Onbepaalde tijd',
+                    'temporary' => 'Bepaalde tijd',
+                    'deployment_to_permanent' => 'Deta-vast',
+                    'deployment_self_employed' => 'ZZP',
+                    'deployment' => 'Detachering',
+                ]
+            ];
+            $global_labels = json_encode($baseArray, JSON_PRETTY_PRINT);
+
+            update_option('wp_eazycv_global_labels', $global_labels);
+        }
+
+        //section name, display name, callback to print description of section, page to which section is attached.
+        add_settings_section($this->plugin_name . "-other_section", null, null, $this->plugin_name . "-other-options");
+        add_settings_field($this->option_name . "_global_labels", __("Global translations"), array($this, "display_textarea_element"), $this->plugin_name . "-other-options", $this->plugin_name . "-other_section", array('field' => 'global_labels'));
+
+        add_settings_field($this->option_name . "_custom_labels", __("Job label translations"), array($this, "display_textarea_element"), $this->plugin_name . "-other-options", $this->plugin_name . "-other_section", array('field' => 'custom_labels'));
+        //section name, form element name, callback for sanitization
+        register_setting($this->plugin_name . "-other_section", $this->option_name . "_global_labels");
+        register_setting($this->plugin_name . "-other_section", $this->option_name . "_custom_labels");
+    }
+
     /**
      * Register all related settings of this plugin
      *
@@ -324,6 +364,7 @@ class Wp_EazyCV_Admin
         $this->register_job_options();
         $this->register_styling_options();
         $this->register_scripting_options();
+        $this->register_other_options();
 
     }
 
@@ -365,10 +406,10 @@ class Wp_EazyCV_Admin
         $currentSelectionArray = $eazy_jobs->get_published_fields();
 
         ?>
-        <input  type="hidden" class="eazycv-admin-input"
+        <input type="hidden" class="eazycv-admin-input"
                name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
-                value='<?php echo get_option($this->option_name . "_" . $fields['field']); ?>'>
+               value='<?php echo get_option($this->option_name . "_" . $fields['field']); ?>'>
 
         <select type="text" class="eazycv-admin-select" multiple style="height:250px;" id="eazycv-job-field-selector">
             <?php
@@ -384,7 +425,6 @@ class Wp_EazyCV_Admin
         </select>
         <?php
     }
-
 
     /**
      * @param $fields
@@ -405,8 +445,9 @@ class Wp_EazyCV_Admin
     public function display_textarea_element($fields)
     {
         //id and name of form element should be same as the setting name.
+
         ?>
-        <textarea type="text" class="eazycv-admin-input"
+        <textarea type="text" class="eazycv-admin-input eazycv-editor" style="height:350px;"
                   name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
                   id="<?php echo $this->option_name . "_" . $fields['field']; ?>"><?php echo get_option($this->option_name . "_" . $fields['field']); ?></textarea>
         <?php

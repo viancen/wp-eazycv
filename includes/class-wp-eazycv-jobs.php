@@ -2,6 +2,8 @@
 
 class Wp_EazyCV_Jobs
 {
+    private $eazycvTranslations = [];
+
     public $publishedFields = [
         'id' => 'ID',
         'refererence' => 'Referentiecode',
@@ -34,7 +36,7 @@ class Wp_EazyCV_Jobs
         'hours_from' => 'Aantal uur van',
         'hours_to' => 'Aantal uur tot',
         'hours_text' => 'Uren toelichting',
-        'contract_type' => 'Contract type',
+        'contract_type' => 'Contractvorm',
         'contract_text' => 'Contract toelichting',
         'created_at' => 'Aangemaakt op',
         'updated_at' => 'Geupdate op',
@@ -44,6 +46,28 @@ class Wp_EazyCV_Jobs
         'end_at' => 'Einddatum',
     ];
 
+    //custom translations?
+    public function __construct()
+    {
+        $custom_labels = get_option('wp_eazycv_custom_labels');
+        if (!empty($custom_labels)) {
+            $custom_labels = json_decode($custom_labels, true);
+            if (!empty($custom_labels)) {
+                $this->publishedFields = [];
+                foreach ($custom_labels as $labelName => $labelValue) {
+                    $this->publishedFields[$labelName] = $labelValue;
+                }
+            }
+        }
+        $translations = get_option('wp_eazycv_global_labels');
+        if (!empty($translations)) {
+            $translations = json_decode($translations, true);
+            if (!empty($translations)) {
+                $this->eazycvTranslations = $translations;
+
+            }
+        }
+    }
 
     /**
      * @return array|mixed
@@ -68,6 +92,8 @@ class Wp_EazyCV_Jobs
      */
     public function getFieldData($job)
     {
+
+
         if (isset($job['educations'])) {
             $job['education'] = $job['educations'];
         }
@@ -119,7 +145,13 @@ class Wp_EazyCV_Jobs
                     }
                 } elseif ($fieldName == 'contract_type') {
                     if (!empty($job[$fieldName])) {
-                        $fv = $job[$fieldName] == 'temporary' ? 'Tijdelijk' : 'Vast';
+
+                        if (isset($this->eazycvTranslations['contract_type'][$fieldValue])) {
+                            $fv = $this->eazycvTranslations['contract_type'][$fieldValue];
+                        } else {
+                            $fv = $job[$fieldName] == 'temporary' ? 'Bepaalde tijd' : 'Onbepaalde tijd';
+                        }
+
                         $result[$fieldName] = [
                             'label' => $this->publishedFields[$fieldName],
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $fv . '</span>'

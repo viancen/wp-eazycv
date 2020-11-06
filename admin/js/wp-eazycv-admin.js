@@ -1,6 +1,7 @@
 (function ($) {
     'use strict';
 
+
     /**
      * All of the code for your admin-facing JavaScript source
      * should reside in this file.
@@ -41,10 +42,12 @@
                 console.log(xhr.getResponseHeader);
             }
         });
+
     }).on('change', '#eazycv-job-field-selector', function () {
         var objectData = JSON.stringify($(this).val());
 
         $('#wp_eazycv_display_job_fields').val(objectData);
     });
+
 
 })(jQuery);

@@ -1,8 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;600;800&display=swap');
 /**
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
-
+#eazycv_admin textarea {
+    background:#222222;
+    color:#fafafa;
+    font-weight:300;
+    font-family: "Inconsolata";
+    font-size:18px;
+}
 .eazycv-admin-input {
     padding: 8px !important;
     width: 100%;

@@ -16,7 +16,7 @@ flush_rewrite_rules();
 
 ?>
 
-<div class="wrap">
+<div class="wrap " id="eazycv_admin">
 	<?php
 	$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 	$this->filter_wp_api_render_tabs();
@@ -35,6 +35,9 @@ flush_rewrite_rules();
 						break;
 					case 'scripting':
 					    include(dirname(__FILE__).'/scripting.php');
+						break;
+					case 'other':
+					    include(dirname(__FILE__).'/other.php');
 						break;
 					// If no tab or general
 					default:
