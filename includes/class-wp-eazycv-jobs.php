@@ -123,7 +123,7 @@ class Wp_EazyCV_Jobs
                 } elseif (in_array($fieldName, ['rate', 'hours', 'salary'])) {
 
                     $fv = '';
-                    if (!empty($job[$fieldName . '_from'])) {
+                    if (!empty($job[$fieldName . '_from']) && $job[$fieldName . '_from'] != 0) {
                         if ($fieldName == 'hours') {
                             $fv = number_format($job[$fieldName . '_from'], 0, '', '.');
                         } else {
@@ -131,7 +131,7 @@ class Wp_EazyCV_Jobs
                         }
                     }
 
-                    if (!empty($job[$fieldName . '_to'])) {
+                    if (!empty($job[$fieldName . '_to']) && $job[$fieldName . '_to'] != 0) {
                         if (!empty($fv)) {
                             $fv .= ' - ';
                         }
