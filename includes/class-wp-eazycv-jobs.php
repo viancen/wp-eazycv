@@ -108,6 +108,8 @@ class Wp_EazyCV_Jobs
         $enabledFields = $this->get_published_fields();
         $job['rate'] = '';
         $job['salary'] = '';
+        $job['hours'] = '';
+
 
         foreach ($job as $fieldName => $fieldValue) {
 
@@ -136,7 +138,7 @@ class Wp_EazyCV_Jobs
                             $fv .= ' - ';
                         }
                         if ($fieldName == 'hours') {
-                            $fv .= number_format($job[$fieldName . '_from'], 0, '', '.');
+                            $fv .= number_format($job[$fieldName . '_to'], 0, '', '.');
                         } else {
                             $fv .= '&euro; ' . number_format($job[$fieldName . '_to'], 0, '', '.');
                         }
