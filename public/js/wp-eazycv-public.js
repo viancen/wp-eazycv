@@ -126,10 +126,13 @@
             });
         });
 
-        if ($('#eazy-share').length) {
+        if ($('#share-eazy').length) {
 
-            $("#eazy-share").jsSocials({
-                shares: ["email", "twitter", "facebook", "googleplus", "linkedin", "whatsapp"]
+            $("#share-eazy").jsSocials({
+                shares: ["email", "twitter", "facebook", "googleplus", "linkedin", "whatsapp"],
+                showLabel: false,
+                showCount: false,
+                shareIn: "popup",
             });
         }
     });

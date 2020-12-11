@@ -87,7 +87,7 @@ class Wp_EazyCV_Job
 
         $social = get_option('wp_eazycv_jobpage_social');
         if($social == 1){
-            $html .= '<div id="eazy-share"></div>';
+            $html .= '<div id="share-eazy"></div>';
         }
 
         return $html;

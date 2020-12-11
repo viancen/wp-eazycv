@@ -603,11 +603,6 @@ class Wp_EazyCV_Public
 			wp_add_inline_style($this->wp_eazycv, $customCss);
 		}
 
-        $social = get_option('wp_eazycv_jobpage_social');
-        if($social == 1){
-            wp_enqueue_script($this->wp_eazycv.'-socials', plugin_dir_url(__FILE__) . 'css/vendor/jssocials.css', array(), $this->version);
-        }
-
 	}
 
 	/**
@@ -714,7 +709,7 @@ class Wp_EazyCV_Public
 		 */
         $social = get_option('wp_eazycv_jobpage_social');
         if($social == 1){
-            wp_enqueue_script($this->wp_eazycv.'-js-socials', plugin_dir_url(__FILE__) . 'js/vendor/jssocials.min.js', array('jquery'), $this->version, true);
+            wp_enqueue_script($this->wp_eazycv.'-js-socials', plugin_dir_url(__FILE__) . 'js/vendor/jssocials.min.js', array('jquery'), $this->version);
         }
 
         wp_enqueue_script($this->wp_eazycv . '-js-lightbox', plugin_dir_url(__FILE__) . 'js/vendor/wp-eazycv-lightbox.js', array('jquery'), $this->version, true);
