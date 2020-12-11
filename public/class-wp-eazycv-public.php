@@ -305,7 +305,7 @@ class Wp_EazyCV_Public
 	 */
 	public function change_page_meta()
 	{
-		if (!empty($this->job['texts']['meta'])) {
+		if (!empty($this->job['texts']['meta']['content'])) {
 			$metaText = $this->job['texts']['meta']['content'];
 		} else {
 			$metaText = $this->job['original_functiontitle'];
@@ -602,6 +602,12 @@ class Wp_EazyCV_Public
 		if (!empty($customCss)) {
 			wp_add_inline_style($this->wp_eazycv, $customCss);
 		}
+
+        $social = get_option('wp_eazycv_jobpage_social');
+        if($social == 1){
+            wp_enqueue_script($this->wp_eazycv.'-socials', plugin_dir_url(__FILE__) . 'css/vendor/jssocials.css', array(), $this->version);
+        }
+
 	}
 
 	/**
@@ -690,6 +696,7 @@ class Wp_EazyCV_Public
 	public function enqueue_scripts()
 	{
 
+
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -705,7 +712,12 @@ class Wp_EazyCV_Public
 		/**
 		 * frontend ajax requests.
 		 */
-		wp_enqueue_script($this->wp_eazycv . '-lightbox', plugin_dir_url(__FILE__) . 'js/wp-eazycv-lightbox.js', array('jquery'), $this->version, true);
+        $social = get_option('wp_eazycv_jobpage_social');
+        if($social == 1){
+            wp_enqueue_script($this->wp_eazycv.'-js-socials', plugin_dir_url(__FILE__) . 'js/vendor/jssocials.min.js', array('jquery'), $this->version, true);
+        }
+
+        wp_enqueue_script($this->wp_eazycv . '-js-lightbox', plugin_dir_url(__FILE__) . 'js/vendor/wp-eazycv-lightbox.js', array('jquery'), $this->version, true);
 		wp_enqueue_script($this->wp_eazycv, plugin_dir_url(__FILE__) . 'js/wp-eazycv-public.js', array('jquery'), $this->version, true);
 
 		wp_localize_script($this->wp_eazycv, 'eazycv_ajax_object',
@@ -718,6 +730,9 @@ class Wp_EazyCV_Public
 		if (!empty($customScript)) {
 			wp_add_inline_script($this->wp_eazycv, $customScript);
 		}
+
+
 	}
+
 
 }

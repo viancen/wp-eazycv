@@ -125,5 +125,12 @@
 
             });
         });
+
+        if ($('#eazy-share').length) {
+
+            $("#eazy-share").jsSocials({
+                shares: ["email", "twitter", "facebook", "googleplus", "linkedin", "whatsapp"]
+            });
+        }
     });
 })(jQuery);

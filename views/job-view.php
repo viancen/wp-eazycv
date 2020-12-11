@@ -18,6 +18,8 @@ class Wp_EazyCV_Job
     {
 
 
+
+
         //ander inschrijfjformulier meegegeven?
         $mainForm = '';
         if (isset($_GET['applyform'])) {
@@ -82,6 +84,11 @@ class Wp_EazyCV_Job
 
         $html .= '</div>';
         $html .= '</div>';
+
+        $social = get_option('wp_eazycv_jobpage_social');
+        if($social == 1){
+            $html .= '<div id="eazy-share"></div>';
+        }
 
         return $html;
     }
