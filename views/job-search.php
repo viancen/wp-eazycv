@@ -19,6 +19,7 @@ class Wp_EazyCV_Job_Search
     {
 
 
+
         $not_default_form = false;
         if (empty($this->atts['portal_id'])) {
             $portalId = get_option('wp_eazycv_apply_form');

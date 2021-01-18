@@ -22,6 +22,9 @@ class Wp_EazyCV_Apply
     public function render()
     {
 
+        if(empty($this->job['id'])){
+            return 1;
+        }
         $mainForm = null;
 
         ///wp force

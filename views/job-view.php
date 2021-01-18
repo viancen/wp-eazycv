@@ -17,8 +17,9 @@ class Wp_EazyCV_Job
     public function render()
     {
 
-
-
+        if(empty($this->job['id'])){
+            return 1;
+        }
 
         //ander inschrijfjformulier meegegeven?
         $mainForm = '';
