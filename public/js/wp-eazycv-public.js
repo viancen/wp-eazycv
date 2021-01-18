@@ -128,6 +128,11 @@
 
         if ($('#share-eazy').length) {
 
+            jsSocials.setDefaults({
+                showLabel: false,
+                css: "eazycv-share-btns"
+            });
+
             $("#share-eazy").jsSocials({
                 shares: ["email", "twitter", "facebook", "googleplus", "linkedin", "whatsapp"],
                 showLabel: false,

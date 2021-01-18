@@ -723,13 +723,9 @@ class Wp_EazyCV_Public
         /**
          * frontend ajax requests.
          */
-        $social = get_option('wp_eazycv_jobpage_social');
-        if ($social == 1) {
-            wp_enqueue_script($this->wp_eazycv . '-js-socials', plugin_dir_url(__FILE__) . 'js/vendor/jssocials.min.js', array('jquery'), $this->version);
-        }
 
-        wp_enqueue_script($this->wp_eazycv . '-js-lightbox', plugin_dir_url(__FILE__) . 'js/vendor/wp-eazycv-lightbox.js', array('jquery'), $this->version, true);
-        wp_enqueue_script($this->wp_eazycv, plugin_dir_url(__FILE__) . 'js/wp-eazycv-public.js', array('jquery'), $this->version, true);
+        wp_enqueue_script($this->wp_eazycv . '-js-lightbox', plugin_dir_url(__FILE__) . 'js/vendor/wp-eazycv-lightbox.js', array('jquery'), $this->version);
+        wp_enqueue_script($this->wp_eazycv, plugin_dir_url(__FILE__) . 'js/wp-eazycv-public.js', array('jquery'), $this->version);
 
         wp_localize_script($this->wp_eazycv, 'eazycv_ajax_object',
             array(

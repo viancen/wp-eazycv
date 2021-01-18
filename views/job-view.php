@@ -88,7 +88,8 @@ class Wp_EazyCV_Job
 
         $social = get_option('wp_eazycv_jobpage_social');
         if($social == 1){
-            $html .= '<div id="share-eazy"></div>';
+            $html .= '<div class="sharethis-inline-share-buttons"></div>
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6005a8eb2bc64600181b1338&product=inline-share-buttons" async="async"></script>';
         }
 
         return $html;
