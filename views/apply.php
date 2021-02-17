@@ -50,6 +50,16 @@ class Wp_EazyCV_Apply
 
         $this->apply_form = $mainForm;
 
+        try {
+            $formSettings = $this->api->get('connectivity/public-forms/' . $this->apply_form);
+        } catch (Exception $exception) {
+            return '<div class="eazy-error">' . __('Er is een fout opgetreden.') . '</div>';
+        }
+
+        if(!empty($formSettings['custom_apply_url'])){
+            return '<div class="eazy-custom-apply-link"><a href="'.$formSettings['custom_apply_url'].'" targe="_blank">' .$formSettings['custom_apply_url']. '</a></div>';
+        }
+
         $googleKey = get_option('wp_eazycv_google_api_key');
         $googleSecret = get_option('wp_eazycv_google_api_secret');
 

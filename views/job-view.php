@@ -18,7 +18,7 @@ class Wp_EazyCV_Job
     public function render()
     {
 
-        if(empty($this->job['id'])){
+        if (empty($this->job['id'])) {
             return 1;
         }
 
@@ -28,9 +28,20 @@ class Wp_EazyCV_Job
         }
 
         //ander inschrijfjformulier meegegeven?
+        $customApplyUrl = '';
         $mainForm = '';
         if (isset($_GET['applyform'])) {
             $mainForm = '?applyform=' . intval($_GET['applyform']);
+            try {
+                $formSettings = $this->api->get('connectivity/public-forms/' . intval($_GET['applyform']));
+
+            } catch (Exception $exception) {
+                return '<div class="eazy-error">' . __('Er is een fout opgetreden.') . '</div>';
+            }
+
+            if (!empty($formSettings['custom_apply_url'])) {
+                $customApplyUrl = '<div class="eazy-custom-apply-link"><a href="' . $formSettings['custom_apply_url'] . '" targe="_blank">' . $formSettings['custom_apply_url'] . '</a></div>';
+            }
         }
 
 
@@ -38,11 +49,15 @@ class Wp_EazyCV_Job
             $this->job['original_functiontitle'] = $this->job['functiontitle'];
         }
 
-        if(!$disable_apply){
-            if (!empty($this->job)) {
-                $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($this->job['functiontitle']) . '-' . $this->job['id'] . $mainForm . '">' . __('Solliciteren') . '</a>';
+        if (!$disable_apply) {
+            if (!empty($customApplyUrl)) {
+                $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . $customApplyUrl . '" target="_blank">' . __('Solliciteren') . '</a>';
             } else {
-                $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/open' . $mainForm . '">' . __('Solliciteren') . '</a>';
+                if (!empty($this->job)) {
+                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($this->job['functiontitle']) . '-' . $this->job['id'] . $mainForm . '">' . __('Solliciteren') . '</a>';
+                } else {
+                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/open' . $mainForm . '">' . __('Solliciteren') . '</a>';
+                }
             }
         } else {
             $applyButton = '';
@@ -97,7 +112,7 @@ class Wp_EazyCV_Job
         $html .= '</div>';
 
         $social = get_option('wp_eazycv_jobpage_social');
-        if($social == 1){
+        if ($social == 1) {
             $html .= '<div class="sharethis-inline-share-buttons"></div>
 <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6005a8eb2bc64600181b1338&product=inline-share-buttons" async="async"></script>';
         }
