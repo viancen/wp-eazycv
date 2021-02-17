@@ -40,7 +40,7 @@ class Wp_EazyCV_Job
             }
 
             if (!empty($formSettings['custom_apply_url'])) {
-                $customApplyUrl = '<div class="eazy-custom-apply-link"><a href="' . $formSettings['custom_apply_url'] . '" targe="_blank">' . $formSettings['custom_apply_url'] . '</a></div>';
+                $customApplyUrl = $formSettings['custom_apply_url'];
             }
         }
 
