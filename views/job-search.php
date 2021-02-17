@@ -36,6 +36,10 @@ class Wp_EazyCV_Job_Search
             ];
         }
 
+        $disable_apply = false;
+        if (!empty($this->atts['disable_apply_button'])) {
+            $disable_apply = true;
+        }
         if (!empty($this->atts['job_type'])) {
             $filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
         }
@@ -124,7 +128,9 @@ class Wp_EazyCV_Job_Search
             $html .= '</div>';
             $html .= '<div class="eazycv-job-row-apply">';
             $html .= '<div class="eazycv-job-row-link-details"><a class="eazycv-link"  href="' . $url . '">' . __('Bekijk details') . '</a></div>';
-            $html .= '<div class="eazycv-job-row-link-apply"><a class="eazycv-link" href="' . $url_apply . '">' . __('Solliciteer') . '</a></div>';
+            if (!$disable_apply) {
+                $html .= '<div class="eazycv-job-row-link-apply"><a class="eazycv-link" href="' . $url_apply . '">' . __('Solliciteer') . '</a></div>';
+            }
             $html .= '</div>';
             $html .= '</div>';
 

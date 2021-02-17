@@ -630,7 +630,7 @@ class Wp_EazyCV_Public
 
         if (!empty($this->api)) {
             try {
-                $emolJobView = new Wp_EazyCV_Job($this->job, $this->api);
+                $emolJobView = new Wp_EazyCV_Job($this->job, $this->api, $atts);
 
                 return $emolJobView->render();
             } catch (Exception $x) {

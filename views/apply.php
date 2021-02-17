@@ -22,7 +22,7 @@ class Wp_EazyCV_Apply
     public function render()
     {
 
-        if(empty($this->job['id'])){
+        if (empty($this->job['id'])) {
             return 1;
         }
         $mainForm = null;
@@ -153,7 +153,9 @@ class Wp_EazyCV_Apply
 
         $html .= $this->gdpr($legal_stuff);
 
-        $html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __('Submit') . '">';
+
+       $html .= '<hr /><input class="eazy-submit eazy-btn" id="eazy-apply-submit-btn" type="button" value="' . __('Submit') . '">';
+
 
         $html .= '</form></div>
 
