@@ -18,26 +18,27 @@ class Wp_EazyCV_Job_Search
     public function render()
     {
 
-
-
         $not_default_form = false;
         if (empty($this->atts['portal_id'])) {
             $portalId = get_option('wp_eazycv_apply_form');
+            $filters = [
+                'channels' => [
+                    $portalId
+                ]
+            ];
         } else {
             $portalId = $this->atts['portal_id'];
             $not_default_form = true;
+            $filters = [
+                'channel' => [
+                    $portalId
+                ]
+            ];
         }
-
-        $filters = [
-            'channels' => [
-                $portalId
-            ]
-        ];
 
         if (!empty($this->atts['job_type'])) {
             $filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
         }
-
 
         if (empty($portalId)) {
             return '<div class="eazy-error">' . __('Er is (nog) geen inschrijfformulier ingesteld.') . '</div>';
@@ -65,9 +66,7 @@ class Wp_EazyCV_Job_Search
         }
         $html = '';
 
-
         foreach ($jobs['data'] as $job) {
-
 
             if (empty($job['original_functiontitle'])) {
                 $job['original_functiontitle'] = $job['functiontitle'];
