@@ -325,7 +325,11 @@ class Wp_EazyCV_Public
     {
 
         //sets meta data and pre thingies before rendering the shortcodes on our pages
-        $postProcessing = get_query_var('EazyCVProcess');
+        try {
+            $postProcessing = get_query_var('EazyCVProcess', '');
+        } catch (Exception $x) {
+            return 0;
+        }
         if (!empty($postProcessing)) {
             if (!empty($_POST)) {
                 $refUrl = $_POST['eazy-url'];
@@ -350,7 +354,7 @@ class Wp_EazyCV_Public
         }
 
 
-        $pagename = get_query_var('JobID');
+        $pagename = get_query_var('JobID', '');
         if (!empty($pagename)) {
 
             $this->eazycvPage = 'job';
@@ -371,7 +375,7 @@ class Wp_EazyCV_Public
             }
         }
 
-        $pagename = get_query_var('ProjectID');
+        $pagename = get_query_var('ProjectID', '');
         if (!empty($pagename)) {
 
             $this->eazycvPage = 'project';
@@ -393,7 +397,7 @@ class Wp_EazyCV_Public
         }
 
         //sets meta data and pre thingies before rendering the shortcodes on our pages
-        $pagename = get_query_var('EazyApplyTo');
+        $pagename = get_query_var('EazyApplyTo', '');
         if (!empty($pagename)) {
 
             $this->eazycvPage = 'apply';
