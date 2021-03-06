@@ -317,6 +317,14 @@ class Wp_EazyCV_Public
         <?php
     }
 
+
+    public function has_query_var($var)
+    {
+        global $wp_query;
+
+        return isset($wp_query->query_vars[$var]);
+    }
+
     /**
      * check_custom_pages()
      *
@@ -324,94 +332,99 @@ class Wp_EazyCV_Public
     public function check_custom_pages()
     {
 
+
         //sets meta data and pre thingies before rendering the shortcodes on our pages
-        try {
+        if ($this->has_query_var('EazyCVProcess')) {
             $postProcessing = get_query_var('EazyCVProcess', '');
-        } catch (Exception $x) {
-            return 0;
-        }
-        if (!empty($postProcessing)) {
-            if (!empty($_POST)) {
-                $refUrl = $_POST['eazy-url'];
-                unset($_POST['eazy-url']);
 
-                $newApplication = $_POST;
-                if (!empty($_FILES)) {
-                    $newApplication['files'] = $_FILES;
-                }
+            if (!empty($postProcessing)) {
+                if (!empty($_POST)) {
+                    $refUrl = $_POST['eazy-url'];
+                    unset($_POST['eazy-url']);
 
-                $success = $this->performApply($newApplication);
-                if ($success == 'Error') {
-                    echo json_encode(['status' => 'error']);
-                } elseif ($success == 'Error-Captcha') {
-                    echo json_encode(['status' => 'captcha']);
-                } else {
-                    echo json_encode(['status' => 'success']);
-                    //return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
+                    $newApplication = $_POST;
+                    if (!empty($_FILES)) {
+                        $newApplication['files'] = $_FILES;
+                    }
+
+                    $success = $this->performApply($newApplication);
+                    if ($success == 'Error') {
+                        echo json_encode(['status' => 'error']);
+                    } elseif ($success == 'Error-Captcha') {
+                        echo json_encode(['status' => 'captcha']);
+                    } else {
+                        echo json_encode(['status' => 'success']);
+                        //return '<div class="eazy-success">' . $form['success_message'] . '</div><div id="eazycv-success-apply"></div>';
+                    }
+                    die();
                 }
-                die();
             }
         }
 
+        if ($this->has_query_var('JobID')) {
+            $pagename = get_query_var('JobID', '');
+            if (!empty($pagename)) {
 
-        $pagename = get_query_var('JobID', '');
-        if (!empty($pagename)) {
+                $this->eazycvPage = 'job';
 
-            $this->eazycvPage = 'job';
+                $jobId = explode('-', $pagename);
+                $jobId = array_pop($jobId);
 
-            $jobId = explode('-', $pagename);
-            $jobId = array_pop($jobId);
+                if (intval($jobId) > 1) {
+                    $this->job = $this->api->get('jobs/published/' . $jobId);
+                    if (empty($this->job['id'])) {
+                        wp_redirect('/');
+                        exit;
+                    }
 
-            if (intval($jobId) > 1) {
-                $this->job = $this->api->get('jobs/published/' . $jobId);
-                if (empty($this->job['id'])) {
-                    wp_redirect('/');
-                    exit;
+                    add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
+                    add_action('wp_head', array($this, 'change_page_meta'));
+
                 }
-
-                add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
-                add_action('wp_head', array($this, 'change_page_meta'));
-
             }
         }
 
-        $pagename = get_query_var('ProjectID', '');
-        if (!empty($pagename)) {
+        if ($this->has_query_var('ProjectID')) {
+            $pagename = get_query_var('ProjectID', '');
+            if (!empty($pagename)) {
 
-            $this->eazycvPage = 'project';
+                $this->eazycvPage = 'project';
 
-            $jobId = explode('-', $pagename);
-            $jobId = array_pop($jobId);
+                $jobId = explode('-', $pagename);
+                $jobId = array_pop($jobId);
 
-            if (intval($jobId) > 1) {
-                $this->job = $this->api->get('jobs/published/' . $jobId);
+                if (intval($jobId) > 1) {
+                    $this->job = $this->api->get('jobs/published/' . $jobId);
 
-                if (empty($this->job['id'])) {
-                    wp_redirect('/');
-                    exit;
+                    if (empty($this->job['id'])) {
+                        wp_redirect('/');
+                        exit;
+                    }
+                    add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
+                    add_action('wp_head', array($this, 'change_page_meta'));
+
                 }
-                add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
-                add_action('wp_head', array($this, 'change_page_meta'));
-
             }
         }
 
-        //sets meta data and pre thingies before rendering the shortcodes on our pages
-        $pagename = get_query_var('EazyApplyTo', '');
-        if (!empty($pagename)) {
+        if ($this->has_query_var('EazyApplyTo')) {
+            //sets meta data and pre thingies before rendering the shortcodes on our pages
+            $pagename = get_query_var('EazyApplyTo', '');
+            if (!empty($pagename)) {
 
-            $this->eazycvPage = 'apply';
-            $jobId = explode('-', $pagename);
-            $jobId = array_pop($jobId);
+                $this->eazycvPage = 'apply';
+                $jobId = explode('-', $pagename);
+                $jobId = array_pop($jobId);
 
-            if (intval($jobId) > 1) {
-                $this->job = $this->api->get('jobs/published/' . $jobId);
-                if (empty($this->job['id'])) {
-                    wp_redirect('/');
-                    exit;
+                if (intval($jobId) > 1) {
+                    $this->job = $this->api->get('jobs/published/' . $jobId);
+                    if (empty($this->job['id'])) {
+                        wp_redirect('/');
+                        exit;
+                    }
+                    add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
+                    add_action('wp_head', array($this, 'change_page_meta'));
                 }
-                add_filter('pre_get_document_title', array($this, 'change_page_title'), 50, 1);
-                add_action('wp_head', array($this, 'change_page_meta'));
             }
         }
 
