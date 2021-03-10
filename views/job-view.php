@@ -42,6 +42,18 @@ class Wp_EazyCV_Job
             if (!empty($formSettings['custom_apply_url'])) {
                 $customApplyUrl = $formSettings['custom_apply_url'];
             }
+        } else {
+            $portalId = get_option('wp_eazycv_apply_form');
+            try {
+                $formSettings = $this->api->get('connectivity/public-forms/' . $portalId);
+
+            } catch (Exception $exception) {
+                return '<div class="eazy-error">' . __('Er is een fout opgetreden.') . '</div>';
+            }
+
+            if (!empty($formSettings['custom_apply_url'])) {
+                $customApplyUrl = $formSettings['custom_apply_url'];
+            }
         }
 
 
