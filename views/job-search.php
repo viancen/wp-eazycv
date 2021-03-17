@@ -88,12 +88,12 @@ class Wp_EazyCV_Job_Search
 
                 $url_apply = get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
             } else {
-                $url_apply = get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'];
+                $url_apply = $formSettings['custom_apply_url'];
 
                 if ($job['type'] == 'job') {
-                    $url = get_site_url() . '/' . get_option('wp_eazycv_jobpage') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'];
+                    $url = get_site_url() . '/' . get_option('wp_eazycv_jobpage') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id']. '?applyform=' . $portalId;
                 } else {
-                    $url = get_site_url() . '/' . get_option('wp_eazycv_projectpage') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'];
+                    $url = get_site_url() . '/' . get_option('wp_eazycv_projectpage') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id']. '?applyform=' . $portalId;
                 }
 
             }
