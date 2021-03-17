@@ -15,7 +15,7 @@
                     <td>Jobs overview-page</td>
                     <td>:</td>
                     <td>[eazycv_job_search]</td>
-                    <td class="eazy-text-muted">Optionally you can pass a different portalId or type: [eazycv_job_search portal_id="312" job_type="project"]</td>
+                    <td class="eazy-text-muted">Optionally you can pass a different portalId or type: [eazycv_job_search portal_id="2" detail_url="custom-url-in-wordpress" job_type="project"]</td>
                 </tr>
                 <tr>
                     <td>Job-detailspage</td>
