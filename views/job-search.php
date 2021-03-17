@@ -23,8 +23,7 @@ class Wp_EazyCV_Job_Search
             $jobUrl = get_option('wp_eazycv_jobpage');
             $projectUrl = get_option('wp_eazycv_projectpage');
         } else {
-            $jobUrl = $this->atts['detail_url'];
-            $projectUrl = $this->atts['detail_url'];
+            $jobUrlCustom = $this->atts['detail_url'];
         }
 
         if (empty($this->atts['portal_id'])) {
@@ -86,25 +85,22 @@ class Wp_EazyCV_Job_Search
                 $job['original_functiontitle'] = $job['functiontitle'];
             }
 
-            if (empty($formSettings['custom_apply_url'])) {
-
+            if (isset($jobUrl)) {
                 if ($job['type'] == 'job') {
                     $url = get_site_url() . '/' . $jobUrl . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
                 } else {
                     $url = get_site_url() . '/' . $projectUrl . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
                 }
+            } else {
+                $url = get_site_url() . '/' . $jobUrlCustom . '/?jobid=' . $job['id'] . '&applyform=' . $portalId;
+            }
 
+            if (empty($formSettings['custom_apply_url'])) {
                 $url_apply = get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
             } else {
                 $url_apply = $formSettings['custom_apply_url'];
-
-                if ($job['type'] == 'job') {
-                    $url = get_site_url() . '/' . $jobUrl . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
-                } else {
-                    $url = get_site_url() . '/' . $projectUrl . '/' . sanitize_title($job['original_functiontitle']) . '-' . $job['id'] . '?applyform=' . $portalId;
-                }
-
             }
+
             $html .= '<div class="eazycv-job-row">';
             $html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
 

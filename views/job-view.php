@@ -19,7 +19,14 @@ class Wp_EazyCV_Job
     {
 
         if (empty($this->job['id'])) {
-            return 1;
+            if (empty($_GET['jobid'])) {
+                return 'No job.';
+            } else {
+                $this->job = $this->api->get('jobs/published/' . intval($_GET['jobId']));
+            }
+        }
+        if (empty($this->job['id'])) {
+            return 'error fetching job';
         }
 
         $disable_apply = false;
