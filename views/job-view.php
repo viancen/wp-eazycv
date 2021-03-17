@@ -22,7 +22,7 @@ class Wp_EazyCV_Job
             if (empty($_GET['jobid'])) {
                 return 'No job.';
             } else {
-                $this->job = $this->api->get('jobs/published/' . intval($_GET['jobId']));
+                $this->job = $this->api->get('jobs/published/' . intval($_GET['jobid']));
             }
         }
         if (empty($this->job['id'])) {

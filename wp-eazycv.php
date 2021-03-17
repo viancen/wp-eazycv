@@ -9,7 +9,7 @@
  * Plugin Name:       EazyCV
  * Plugin URI:        https://eazycv.nl/wordpress-plugin/
  * Description:       Deze plugin is om je EazyCV systeem aan te sluiten op je Wordpress website..
- * Version:           1.6.3
+ * Version:           1.6.4
  * Author:            Inforvision BV
  * Author URI:        https://inforvision.nl/
  * License:           GPL-2.0+
@@ -26,7 +26,7 @@ if (!defined('WPINC')) {
 /**
  * Currently plugin version.
  */
-define('Wp_EazyCV_VERSION', '1.6.3');
+define('Wp_EazyCV_VERSION', '1.6.4');
 define('Wp_EazyCV_DEBUG', false);
 
 /**
