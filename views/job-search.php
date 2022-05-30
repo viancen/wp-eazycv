@@ -114,7 +114,7 @@ class Wp_EazyCV_Job_Search
             $formSettings['layout_settings'] = json_decode($formSettings['layout_settings'], true);
         }
 
-        $filterHtml = '';
+
         foreach ($ListsFilters as $filter => $values) {
             if (!empty($values['data'])) {
                 if (empty($filterHtml)) {
@@ -171,9 +171,30 @@ class Wp_EazyCV_Job_Search
             $filterHtml .= '</div>';
         }
         $html = '<div id="eazycv-top-of-jobs"></div>' . $filterHtml;
+
+        //-- pagination
+        if (!isset ($_GET['eazy-page'])) {
+            $page = 1;
+        } else {
+            $page = $_GET['eazy-page'];
+        }
+
+
+
+        $results_per_page = get_option('wp_eazycv_job_pagination') ? get_option('wp_eazycv_job_pagination') : 10;
+        $current_page = $page;
+
         $jobs = $this->api->get('jobs/published', [
-            'filter' => $filters
+            'filter' => $filters,
+            'limit' => $results_per_page,
+            'page' => $page,
         ]);
+
+        
+        $number_of_result = $jobs['total'];
+
+        //determine the total number of pages available
+        $number_of_page = ceil($number_of_result / $results_per_page);
 
 
         if (empty($jobs['data'])) {
@@ -252,6 +273,20 @@ class Wp_EazyCV_Job_Search
             $html .= '</div>';
 
         }
+
+        $html .= '<div class="eazycv-pagination">';
+        $current_rel_uri = add_query_arg(NULL, NULL);
+        for ($page = 1; $page <= $number_of_page; $page++) {
+            if (empty($_GET)) {
+                $link = $current_rel_uri.'?eazy-page=' . $page;
+            } else {
+                $link = $current_rel_uri.'&eazy-page=' . $page;
+            }
+            $class = $current_page == $page ? 'current': '';
+            $html .= '<a href="' . $link  . '" class="'.$class.'">' . $page . '</a>';
+        }
+        $html .= '</div>';
+
         $html .= '<div class="eazycv-back-top">';
         $html .= '<a href="#eazycv-top-of-jobs">terug naar boven</a>';
         $html .= '</div>';

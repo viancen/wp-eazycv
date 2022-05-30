@@ -251,6 +251,7 @@ class Wp_EazyCV_Admin
         add_settings_field($this->option_name . "_jobpage_social_share", __("Show social media sharing"), array($this, "display_checkbox"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'jobpage_social'));
         add_settings_field($this->option_name . "_display_job_fields", __("Fields to publish"), array($this, "display_job_fields"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'display_job_fields'));
         add_settings_field($this->option_name . "_display_job_filters", __("Filters to publish"), array($this, "display_job_filters"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'display_job_filters'));
+        add_settings_field($this->option_name . "_job_pagination", __("Aantal vacatures per pagina"), array($this, "display_form_element"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'job_pagination'));
 
         add_settings_field($this->option_name . "_projectpage", __("Project Page"), array($this, "list_pages"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'projectpage'));
         add_settings_field($this->option_name . "_projectpage_title", __("Project Title Template"), array($this, "display_form_element"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'projectpage_title'));
@@ -265,6 +266,7 @@ class Wp_EazyCV_Admin
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_jobpage_social");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_display_job_fields");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_display_job_filters");
+        register_setting($this->plugin_name . "-job_section", $this->option_name . "_job_pagination");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_projectpage");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_projectpage_title");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_jobsearch_page");
