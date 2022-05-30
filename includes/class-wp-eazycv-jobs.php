@@ -22,6 +22,9 @@ class Wp_EazyCV_Jobs
         'education' => 'Opleidingsniveau(s)',
         'discipline_id' => 'Vakgebied',
         'job_category_id' => 'Categorie',
+
+        'category_description' => 'Categorie omschrijving',
+
         'years_experience_min' => 'Jaren werkervaring (vanaf)',
         'years_experience_max' => 'Jaren werkervaring (tot)',
         'salary' => 'Salaris',
@@ -89,6 +92,31 @@ class Wp_EazyCV_Jobs
         return $currentSelectionArray;
     }
 
+    /**
+     * @return array|mixed
+     */
+    public function get_all_fields()
+    {
+        return $this->publishedFields;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function get_published_filters()
+    {
+        $currentSelection = get_option('wp_eazycv_display_job_filters');
+
+        $currentSelectionArray = [];
+        if (!empty($currentSelection)) {
+            $currentSelectionArray = json_decode($currentSelection, true);
+        }
+        if (empty($currentSelectionArray)) {
+            $currentSelectionArray = [];
+        }
+        return $currentSelectionArray;
+    }
+
 
     /**
      * @param $job
@@ -106,14 +134,18 @@ class Wp_EazyCV_Jobs
 
         $result = [];
         $enabledFields = $this->get_published_fields();
+
+
         $job['rate'] = '';
         $job['salary'] = '';
+        $job['category_description'] = '';
         $job['hours'] = '';
 
 
         foreach ($job as $fieldName => $fieldValue) {
 
             if (in_array($fieldName, $enabledFields)) {
+
 
                 if (strstr($fieldName, '_date') || substr($fieldName, -3) == '_at') {
                     if (!empty($job[$fieldName])) {
@@ -207,6 +239,17 @@ class Wp_EazyCV_Jobs
                         $result['url'] = [
                             'label' => $this->publishedFields['url'],
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '"><a href=' . $job['url'] . ' target="_blank">' . $job['url'] . '</a></span>'
+                        ];
+                    }
+                } elseif ($fieldName == 'category_description') {
+
+                    if(isset($job['job_category'])){
+                        $job['category'] = $job['job_category'];
+                    }
+                    if (!empty($job['category']) && !empty($job['category']['description'])) {
+                        $result['url'] = [
+                            'label' => $this->publishedFields['category_description'],
+                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">'.$job['category']['description'].'</span>'
                         ];
                     }
                 } elseif (substr($fieldName, -3) == '_id') {

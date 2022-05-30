@@ -14,16 +14,46 @@
     width: 150px;
 }
 
+.eazycv-job-search-filters {
+    width: 99%;
+    display: block;
+    padding: 2px;
+    margin: 2px;
+}
+
+.eazycv-job-search-filters-text {
+    width: 99%;
+    display: block;
+    padding: 2px;
+    margin: 2px;
+}
+
 .eazycv-form-group {
     padding: 10px;
+}
+
+.eazycv-filter-group {
+    display: block;
+    width: 100%;
 }
 
 .eazycv-apply-button-top {
     text-align: right;
 }
 
+.eazycv-back-top {
+    margin: 20px;
+    text-align: center;
+    display: block;
+    border-top: solid 1px #cecece;
+}
+
 .eazycv-apply-button-bottom {
     text-align: right;
+}
+
+.eazycv-location-filter {
+    display: inline-block;
 }
 
 .eazycv-field {

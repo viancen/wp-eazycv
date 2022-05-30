@@ -2,6 +2,18 @@
     'use strict';
 
     $(function () {
+        function performEazyCvSearch() {
+            var $params = '?eazycv-search=1';
+            $('.eazycv-job-search-filters').each(function () {
+                if (this.value) {
+                    $params += '&' + $(this).attr('name') + '=' + this.value;
+                }
+            });
+            if ($params != '?eazycv-search=1') {
+                window.location.href = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + $params;
+            }
+        }
+
         function sendEazyData() {
             const XHR = new XMLHttpRequest();
 
@@ -82,6 +94,17 @@
 
                 }
             });
+
+        }).on('click', '.eazycv-job-search-filters-reset', function () {
+            window.location.href = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+        }).on('keyup', '.eazycv-job-search-filters', function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                performEazyCvSearch();
+            }
+        }).on('click', '.eazycv-job-search-filters-submit', function () {
+            performEazyCvSearch();
+        }).on('change', '.eazycv-job-search-filters', function () {
 
         }).on('click', '#accept-terms-modal-btn', function () {
             $('#eazycv-field-terms').prop('checked', true);

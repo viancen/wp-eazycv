@@ -250,6 +250,7 @@ class Wp_EazyCV_Admin
         add_settings_field($this->option_name . "_jobpage_title", __("Job PageTitle Template"), array($this, "display_form_element"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'jobpage_title'));
         add_settings_field($this->option_name . "_jobpage_social_share", __("Show social media sharing"), array($this, "display_checkbox"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'jobpage_social'));
         add_settings_field($this->option_name . "_display_job_fields", __("Fields to publish"), array($this, "display_job_fields"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'display_job_fields'));
+        add_settings_field($this->option_name . "_display_job_filters", __("Filters to publish"), array($this, "display_job_filters"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'display_job_filters'));
 
         add_settings_field($this->option_name . "_projectpage", __("Project Page"), array($this, "list_pages"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'projectpage'));
         add_settings_field($this->option_name . "_projectpage_title", __("Project Title Template"), array($this, "display_form_element"), $this->plugin_name . "-job-options", $this->plugin_name . "-job_section", array('field' => 'projectpage_title'));
@@ -263,6 +264,7 @@ class Wp_EazyCV_Admin
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_jobpage_title");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_jobpage_social");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_display_job_fields");
+        register_setting($this->plugin_name . "-job_section", $this->option_name . "_display_job_filters");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_projectpage");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_projectpage_title");
         register_setting($this->plugin_name . "-job_section", $this->option_name . "_jobsearch_page");
@@ -431,6 +433,46 @@ class Wp_EazyCV_Admin
         <select type="text" class="eazycv-admin-select" multiple style="height:250px;" id="eazycv-job-field-selector">
             <?php
             foreach ($eazy_jobs->publishedFields as $fieldName => $displayName) { ?>
+                <option <?php if (in_array($fieldName, $currentSelectionArray)) {
+                    echo 'selected';
+                } ?>
+                        value="<?php echo $fieldName ?>"><?php echo $displayName ?>
+                    (<?php echo $fieldName ?>)
+                </option>
+
+            <?php } ?>
+        </select>
+        <?php
+    }
+
+
+    /**
+     * @param $fields
+     */
+    public function display_job_filters($fields)
+    {
+        //$currentSelection = explode(',', $currentSelection);
+        $eazy_jobs = new Wp_EazyCV_Jobs();
+        $currentSelectionArray = $eazy_jobs->get_published_filters();
+
+
+        ?>
+        <input type="hidden" class="eazycv-admin-input"
+               name="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+               id="<?php echo $this->option_name . "_" . $fields['field']; ?>"
+               value='<?php echo get_option($this->option_name . "_" . $fields['field']); ?>'>
+
+        <select type="text" class="eazycv-admin-select" multiple style="height:250px;" id="eazycv-job-filter-selector">
+            <?php
+            $filters = [
+                'query' => 'Vrij zoeken (functie/inhoud)',
+                'location' => 'Postcode-plaats/straal',
+                'categories' => 'Categorie',
+                'organisations' => 'Business Unit (organisatie)',
+                'education' => 'Opleidingsniveau',
+                'disciplines' => 'Vakgebieden',
+            ];
+            foreach ($filters as $fieldName => $displayName) { ?>
                 <option <?php if (in_array($fieldName, $currentSelectionArray)) {
                     echo 'selected';
                 } ?>

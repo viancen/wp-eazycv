@@ -42,6 +42,20 @@ class Wp_EazyCV_Job_Search
                 ]
             ];
         }
+        $getFilters = [
+            'organisations',
+            'categories',
+            'education',
+            'disciplines',
+            'query',
+            'location',
+            'distance',
+        ];
+        foreach ($getFilters as $getFilter) {
+            if (!empty($_GET[$getFilter])) {
+                $filters[$getFilter] = strip_tags($_GET[$getFilter]);
+            }
+        }
 
         $disable_apply = false;
         if (!empty($this->atts['disable_apply_button'])) {
@@ -50,18 +64,49 @@ class Wp_EazyCV_Job_Search
         if (!empty($this->atts['job_type'])) {
             $filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
         }
+        $filters['order_by'] = 'jobs.start_publish_date';
+        $filters['order_direction'] = 'desc';
 
         if (empty($portalId)) {
             return '<div class="eazy-error">' . __('Er is (nog) geen inschrijfformulier ingesteld.') . '</div>';
         }
 
+        $filterSettings = $this->jobDetails->get_published_filters();
+
         //$formSettings = $this->api->get( 'connectivity/public-forms/' . $portalId );
         try {
             $formSettings = $this->api->get('connectivity/public-forms/' . $portalId);
+            $ListsFilters = [
+                'query' => [
+                    'data' => in_array('query', $filterSettings) ? 'query' : null,
+                    'label' => 'Functie/Inhoud'
+                ],
+                'location' => [
+                    'data' => in_array('location', $filterSettings) ? 'location' : null,
+                    'label' => 'Locatie + straal'
+                ],
+                'organisations' => [
+                    'data' => in_array('organisations', $filterSettings) ? $this->api->get('lists/organisations') : null,
+                    'label' => 'Business Unit'
+                ],
+                'categories' => [
+                    'data' => in_array('categories', $filterSettings) ? $this->api->get('lists/JobCategories') : null,
+                    'label' => 'Categorie'
+                ],
+                'education' => [
+                    'data' => in_array('education', $filterSettings) ? $this->api->get('lists/education') : null,
+                    'label' => 'Opleidingsniveau'
+                ],
+                'disciplines' => [
+                    'data' => in_array('disciplines', $filterSettings) ? $this->api->get('lists/disciplines') : null,
+                    'label' => 'Vakgebied'
+                ]
+            ];
 
         } catch (Exception $exception) {
             return '<div class="eazy-error">' . __('Er is een fout opgetreden.') . '</div>';
         }
+
         if (!empty($formSettings['custom_apply_url'])) {
             $disable_apply = false;
         }
@@ -69,15 +114,73 @@ class Wp_EazyCV_Job_Search
             $formSettings['layout_settings'] = json_decode($formSettings['layout_settings'], true);
         }
 
+        $filterHtml = '';
+        foreach ($ListsFilters as $filter => $values) {
+            if (!empty($values['data'])) {
+                if (empty($filterHtml)) {
+                    $filterHtml = '<div class="eazycv-filters">' .
+                        '<div class="eazycv-filters-title"><h3>Filters</h3></div>';
+                }
+                $filterHtml .= '<div class="eazycv-filter-group">';
+                $filterHtml .= '<div class="eazycv-filter-group-label">' . $values['label'] . '</div>';
+                if ($values['data'] == 'query') {
+                    $value = (isset($_GET[$filter])) ? strip_tags($_GET[$filter]) : '';
+                    $filterHtml .= '<input name="' . $filter . '"  id="eazycv-filter-' . $filter . '" value="' . $value . '" placeholder="Zoek ' . $values['label'] . '" class="eazycv-job-search-filters">';
+                } elseif ($values['data'] == 'location') {
+                    $value = (isset($_GET['location'])) ? strip_tags($_GET['location']) : '';
+                    $filterHtml .= '<div class="eazycv-location-filter">';
+                    $filterHtml .= '<input name="' . $filter . '"  id="eazycv-filter-' . $filter . '" value="' . $value . '" placeholder="' . $values['label'] . '" class="eazycv-job-search-filters">';
+                    $filterHtml .= '</div><div class="eazycv-location-filter">';
+                    $filterHtml .= '<select name="distance"  id="eazycv-filter-distance" placeholder="Selecteer straal" class="eazycv-job-search-filters">';
+                    $filterHtml .= '<option value="100">100km</option>';
+
+                    $distances = [
+                        '75',
+                        '60',
+                        '50',
+                        '40',
+                        '30',
+                        '20',
+                        '10',
+                    ];
+                    foreach ($distances as $value) {
+                        $selected = (isset($_GET['distance']) && $_GET['distance'] == $value) ? 'selected="selected"' : '';
+                        $filterHtml .= '<option value="' . $value . '" ' . $selected . '>' . $value . 'km</option>';
+                    }
+                    $filterHtml .= '</select>';
+                    $filterHtml .= '</div>';
+                } else {
+                    $filterHtml .= '<select name="' . $filter . '"  id="eazycv-filter-' . $filter . '" placeholder="Selecteer ' . $values['label'] . '" class="eazycv-job-search-filters">';
+                    $filterHtml .= '<option value=""></option>';
+
+                    foreach ($values['data'] as $value) {
+                        $selected = (isset($_GET[$filter]) && $_GET[$filter] == $value['id']) ? 'selected="selected"' : '';
+                        $filterHtml .= '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['name'] . '</option>';
+                    }
+                    $filterHtml .= '</select>';
+                }
+                $filterHtml .= '</div>';
+            }
+        }
+
+        if (!empty($filterHtml)) {
+            $filterHtml .= '<div class="eazycv-filters-buttons">
+ <button type="reset" class="eazycv-job-search-filters-reset">Reset</button>
+ <button type="button" class="eazycv-job-search-filters-submit">Filteren</button>
+ </div>';
+            $filterHtml .= '</div>';
+        }
+        $html = '<div id="eazycv-top-of-jobs"></div>' . $filterHtml;
         $jobs = $this->api->get('jobs/published', [
             'filter' => $filters
         ]);
 
+
         if (empty($jobs['data'])) {
             if (!isset($formSettings['no_results_message'])) $formSettings['no_results_message'] = '';
-            return '<div class="eazy-no-job-results">' . $formSettings['no_results_message'] . '</div>';
+            return $filterHtml . '<div class="eazy-no-job-results">' . $formSettings['no_results_message'] . '</div>';
         }
-        $html = '';
+
 
         foreach ($jobs['data'] as $job) {
 
@@ -105,10 +208,12 @@ class Wp_EazyCV_Job_Search
             $html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
 
             $publishedFields = $this->jobDetails->getFieldData($job);
+
             if (!empty($publishedFields['cover'])) {
                 unset($publishedFields['cover']);
             }
-            if (!empty($publishedFields['logo'])) {
+            if (isset($publishedFields['logo']) && !empty($publishedFields['logo']['value'])) {
+
                 $html .= '<div class="eazycv-search-job-item-row eazycv-published-item eazycv-job-row-item-logo">';
                 $html .= '<div class="eazycv-job-logo"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['logo']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $job['functiontitle'] . '" /></div>';
                 $html .= '</div>';
@@ -147,7 +252,9 @@ class Wp_EazyCV_Job_Search
             $html .= '</div>';
 
         }
-
+        $html .= '<div class="eazycv-back-top">';
+        $html .= '<a href="#eazycv-top-of-jobs">terug naar boven</a>';
+        $html .= '</div>';
         return $html;
     }
 }

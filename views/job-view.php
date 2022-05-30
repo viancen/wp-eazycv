@@ -97,7 +97,7 @@ class Wp_EazyCV_Job
 
         $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span>' . $this->job['functiontitle'] . ' </span> </div>';
         $html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
-        if (isset($publishedFields['logo']) && !empty($publishedFields['logo'])) {
+        if (isset($publishedFields['logo']) && !empty($publishedFields['logo']['value'])) {
             $html .= '<div class="eazycv-job-logo"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['logo']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $this->job['functiontitle'] . '" /></div>';
             unset($publishedFields['logo']);
         } else {
