@@ -180,7 +180,6 @@ class Wp_EazyCV_Job_Search
         }
 
 
-
         $results_per_page = get_option('wp_eazycv_job_pagination') ? get_option('wp_eazycv_job_pagination') : 10;
         $current_page = $page;
 
@@ -190,7 +189,7 @@ class Wp_EazyCV_Job_Search
             'page' => $page,
         ]);
 
-        
+
         $number_of_result = $jobs['total'];
 
         //determine the total number of pages available
@@ -278,12 +277,12 @@ class Wp_EazyCV_Job_Search
         $current_rel_uri = add_query_arg(NULL, NULL);
         for ($page = 1; $page <= $number_of_page; $page++) {
             if (empty($_GET)) {
-                $link = $current_rel_uri.'?eazy-page=' . $page;
+                $link = $current_rel_uri . '?eazy-page=' . $page;
             } else {
-                $link = $current_rel_uri.'&eazy-page=' . $page;
+                $link = $current_rel_uri . '&eazy-page=' . $page;
             }
-            $class = $current_page == $page ? 'current': '';
-            $html .= '<a href="' . $link  . '" class="'.$class.'">' . $page . '</a>';
+            $class = $current_page == $page ? 'current' : '';
+            $html .= '<a href="' . $link . '" class="' . $class . '">' . $page . '</a>';
         }
         $html .= '</div>';
 
