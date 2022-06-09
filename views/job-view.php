@@ -73,9 +73,9 @@ class Wp_EazyCV_Job
                 $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . $customApplyUrl . '" target="_blank">' . __('Solliciteren') . '</a>';
             } else {
                 if (!empty($this->job)) {
-                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($this->job['functiontitle']) . '-' . $this->job['id'] . $mainForm . '">' . __('Solliciteren') . '</a>';
+                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_home_url() . '/' . get_option('wp_eazycv_apply_page') . '/' . sanitize_title($this->job['functiontitle']) . '-' . $this->job['id'] . $mainForm . '">' . __('Solliciteren') . '</a>';
                 } else {
-                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_site_url() . '/' . get_option('wp_eazycv_apply_page') . '/open' . $mainForm . '">' . __('Solliciteren') . '</a>';
+                    $applyButton = '<a class="eazycv-apply-to-job eazycv-btn" href="' . get_home_url() . '/' . get_option('wp_eazycv_apply_page') . '/open' . $mainForm . '">' . __('Solliciteren') . '</a>';
                 }
             }
         } else {
@@ -83,7 +83,7 @@ class Wp_EazyCV_Job
         }
 
 
-        $urlBack = get_site_url() . '/' . get_option('wp_eazycv_jobsearch_page');
+        $urlBack = get_home_url() . '/' . get_option('wp_eazycv_jobsearch_page');
         $html = '<div class="eazycv-job-body eazycv-job-' . $this->job['type'] . '">';
 
         $publishedFields = $this->jobDetails->getFieldData($this->job);
@@ -95,7 +95,7 @@ class Wp_EazyCV_Job
             unset($publishedFields['cover']);
         }
 
-        $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span>' . $this->job['functiontitle'] . ' </span> </div>';
+        $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_home_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span>' . $this->job['functiontitle'] . ' </span> </div>';
         $html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
         if (isset($publishedFields['logo']) && !empty($publishedFields['logo']['value'])) {
             $html .= '<div class="eazycv-job-logo"><img src="https://eazycv.s3.eu-central-1.amazonaws.com/' . $publishedFields['logo']['value'] . '?bust=' . rand(0, 292992) . '" alt="' . $this->job['functiontitle'] . '" /></div>';

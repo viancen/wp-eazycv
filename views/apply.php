@@ -95,9 +95,9 @@ class Wp_EazyCV_Apply
             }
 
 
-            $urlBack = get_site_url() . '/' . get_option('wp_eazycv_jobsearch_page');
+            $urlBack = get_home_url() . '/' . get_option('wp_eazycv_jobsearch_page');
 
-            $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> Solliciteren: ' . $this->job['functiontitle'] . ' </span> </div>';
+            $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_home_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> Solliciteren: ' . $this->job['functiontitle'] . ' </span> </div>';
             $html .= '<h2 class="eazycv-job-view-h2">' . $this->job['original_functiontitle'] . '</h2>';
 
             $publishedFields = $this->jobDetails->getFieldData($this->job);
@@ -116,9 +116,9 @@ class Wp_EazyCV_Apply
             if (!empty($label)) {
                 $html = '<h2 class="eazycv-job-view-h2">' . $label . '</h2>';
             }
-            $urlBack = get_site_url() . '/' . get_option('wp_eazycv_jobsearch_page');
+            $urlBack = get_home_url() . '/' . get_option('wp_eazycv_jobsearch_page');
 
-            $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_site_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> Inschrijven </span> </div>';
+            $html .= '<div class="eazycv-job-breadcrumbs"><a href="' . get_home_url() . '">Home</a> &raquo; <a href="' . $urlBack . '">Alle vacatures</a> &raquo; <span> Inschrijven </span> </div>';
 
         }
 
