@@ -247,7 +247,7 @@ class Wp_EazyCV_Jobs
                         $job['category'] = $job['job_category'];
                     }
                     if (!empty($job['category']) && !empty($job['category']['description'])) {
-                        $result['url'] = [
+                        $result['category'] = [
                             'label' => $this->publishedFields['category_description'],
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">'.$job['category']['description'].'</span>'
                         ];
