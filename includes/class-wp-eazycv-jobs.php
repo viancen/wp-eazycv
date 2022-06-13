@@ -20,7 +20,7 @@ class Wp_EazyCV_Jobs
         'address' => 'Standplaats',
         'level_id' => 'Niveau',
         'education' => 'Opleidingsniveau(s)',
-        'discipline_id' => 'Vakgebied',
+        'disciplines_id' => 'Vakgebied',
         'job_category_id' => 'Categorie',
 
         'category_description' => 'Categorie omschrijving',

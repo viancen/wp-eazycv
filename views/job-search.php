@@ -64,7 +64,8 @@ class Wp_EazyCV_Job_Search
         if (!empty($this->atts['job_type'])) {
             $filters['job_type'] = $this->atts['job_type'] == 'project' ? 'project' : 'job';
         }
-        $filters['order_by'] = 'jobs.start_publish_date';
+
+        $filters['order_by'] = get_option('wp_eazycv_job_order_by') ? get_option('wp_eazycv_job_order_by') : 'jobs.updated_at';
         $filters['order_direction'] = 'desc';
 
         if (empty($portalId)) {
@@ -83,7 +84,7 @@ class Wp_EazyCV_Job_Search
                 ],
                 'location' => [
                     'data' => in_array('location', $filterSettings) ? 'location' : null,
-                    'label' => 'Locatie + straal'
+                    'label' => 'Postcode/plaats + straal'
                 ],
                 'organisations' => [
                     'data' => in_array('organisations', $filterSettings) ? $this->api->get('lists/organisations') : null,
@@ -115,6 +116,7 @@ class Wp_EazyCV_Job_Search
         }
 
 
+        $pageInfo = '';
         foreach ($ListsFilters as $filter => $values) {
             if (!empty($values['data'])) {
                 if (empty($filterHtml)) {
@@ -129,9 +131,9 @@ class Wp_EazyCV_Job_Search
                 } elseif ($values['data'] == 'location') {
                     $value = (isset($_GET['location'])) ? strip_tags($_GET['location']) : '';
                     $filterHtml .= '<div class="eazycv-location-filter">';
-                    $filterHtml .= '<input name="' . $filter . '"  id="eazycv-filter-' . $filter . '" value="' . $value . '" placeholder="' . $values['label'] . '" class="eazycv-job-search-filters">';
-                    $filterHtml .= '</div><div class="eazycv-location-filter">';
-                    $filterHtml .= '<select name="distance"  id="eazycv-filter-distance" placeholder="Selecteer straal" class="eazycv-job-search-filters">';
+                    $filterHtml .= '<div class="eazycv-location-filter-where"><input name="' . $filter . '"  id="eazycv-filter-' . $filter . '" value="' . $value . '" placeholder="' . $values['label'] . '" class="eazycv-job-search-filters"></div>';
+
+                    $filterHtml .= '<div class="eazycv-location-filter-distance"><select name="distance"  id="eazycv-filter-distance" placeholder="Selecteer straal" class="eazycv-job-search-filters">';
                     $filterHtml .= '<option value="100">100km</option>';
 
                     $distances = [
@@ -149,12 +151,16 @@ class Wp_EazyCV_Job_Search
                     }
                     $filterHtml .= '</select>';
                     $filterHtml .= '</div>';
+                    $filterHtml .= '</div>';
                 } else {
                     $filterHtml .= '<select name="' . $filter . '"  id="eazycv-filter-' . $filter . '" placeholder="Selecteer ' . $values['label'] . '" class="eazycv-job-search-filters">';
                     $filterHtml .= '<option value=""></option>';
 
                     foreach ($values['data'] as $value) {
                         $selected = (isset($_GET[$filter]) && $_GET[$filter] == $value['id']) ? 'selected="selected"' : '';
+                        if($filter == 'categories'){
+                            $pageInfo = $value['description'];
+                        }
                         $filterHtml .= '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['name'] . '</option>';
                     }
                     $filterHtml .= '</select>';
@@ -201,7 +207,11 @@ class Wp_EazyCV_Job_Search
             return $filterHtml . '<div class="eazy-no-job-results">' . $formSettings['no_results_message'] . '</div>';
         }
 
+        $html .= '<div class="eazycv-job-search-totals"><h4>'.$number_of_result.' vacatures gevonden</h4></div>';
 
+        if(!empty($pageInfo)){
+            $html .= '<div class="eazycv-job-search-intro">'.$pageInfo.'</div>';
+        }
         foreach ($jobs['data'] as $job) {
 
             if (empty($job['original_functiontitle'])) {

@@ -69,7 +69,17 @@ text-align: center;
 }
 
 .eazycv-location-filter {
-    display: inline-block;
+    display: grid;
+    column-count: 3
+}
+
+.eazycv-location-filter-where {
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
+.eazycv-location-filter-distance {
+    grid-row-start: 3;
+    grid-row-end: 1;
 }
 
 .eazycv-field {
