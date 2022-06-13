@@ -80,27 +80,33 @@ class Wp_EazyCV_Job_Search
             $ListsFilters = [
                 'query' => [
                     'data' => in_array('query', $filterSettings) ? 'query' : null,
-                    'label' => 'Functie/Inhoud'
+                    'label' => 'Functie/Inhoud',
+                    'class' => 'job-query',
                 ],
                 'location' => [
                     'data' => in_array('location', $filterSettings) ? 'location' : null,
-                    'label' => 'Postcode/plaats + straal'
+                    'label' => 'Postcode/plaats + straal',
+                    'class' => 'job-location',
                 ],
                 'organisations' => [
                     'data' => in_array('organisations', $filterSettings) ? $this->api->get('lists/organisations') : null,
-                    'label' => 'Business Unit'
+                    'label' => 'Business Unit',
+                    'class' => 'job-organisation',
                 ],
                 'categories' => [
                     'data' => in_array('categories', $filterSettings) ? $this->api->get('lists/JobCategories') : null,
-                    'label' => 'Categorie'
+                    'label' => 'Categorie',
+                    'class' => 'job-category',
                 ],
                 'education' => [
                     'data' => in_array('education', $filterSettings) ? $this->api->get('lists/education') : null,
-                    'label' => 'Opleidingsniveau'
+                    'label' => 'Opleidingsniveau',
+                    'class' => 'job-educatiom',
                 ],
                 'disciplines' => [
                     'data' => in_array('disciplines', $filterSettings) ? $this->api->get('lists/disciplines') : null,
-                    'label' => 'Vakgebied'
+                    'label' => 'Vakgebied',
+                    'class' => 'job-disciplines',
                 ]
             ];
 
@@ -123,8 +129,8 @@ class Wp_EazyCV_Job_Search
                     $filterHtml = '<div class="eazycv-filters">' .
                         '<div class="eazycv-filters-title"><h3>Filters</h3></div>';
                 }
-                $filterHtml .= '<div class="eazycv-filter-group">';
-                $filterHtml .= '<div class="eazycv-filter-group-label">' . $values['label'] . '</div>';
+                $filterHtml .= '<div class="eazycv-filter-group  eazycv-'.$values['class'].'-group">';
+                $filterHtml .= '<div class="eazycv-filter-group-label eazycv-'.$values['class'].'-label">' . $values['label'] . '</div>';
                 if ($values['data'] == 'query') {
                     $value = (isset($_GET[$filter])) ? strip_tags($_GET[$filter]) : '';
                     $filterHtml .= '<input name="' . $filter . '"  id="eazycv-filter-' . $filter . '" value="' . $value . '" placeholder="Zoek ' . $values['label'] . '" class="eazycv-job-search-filters">';
