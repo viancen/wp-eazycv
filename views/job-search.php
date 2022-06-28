@@ -164,7 +164,7 @@ class Wp_EazyCV_Job_Search
 
                     foreach ($values['data'] as $value) {
                         $selected = (isset($_GET[$filter]) && $_GET[$filter] == $value['id']) ? 'selected="selected"' : '';
-                        if($filter == 'categories'){
+                        if($filter == 'categories' && $selected !== '') {
                             $pageInfo = $value['description'];
                         }
                         $filterHtml .= '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['name'] . '</option>';
