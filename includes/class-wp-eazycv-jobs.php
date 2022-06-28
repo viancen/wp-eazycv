@@ -243,18 +243,19 @@ class Wp_EazyCV_Jobs
                     }
                 } elseif ($fieldName == 'category_description') {
 
-                    if(isset($job['job_category'])){
+                    if (isset($job['job_category'])) {
                         $job['category'] = $job['job_category'];
                     }
                     if (!empty($job['category']) && !empty($job['category']['description'])) {
                         $result['category'] = [
                             'label' => $this->publishedFields['category_description'],
-                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">'.$job['category']['description'].'</span>'
+                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $job['category']['description'] . '</span>'
                         ];
                     }
                 } elseif (substr($fieldName, -3) == '_id') {
                     if (!empty($job[$fieldName])) {
                         $fieldCheck = str_replace('_id', '', $fieldName);
+                        if ($fieldCheck == 'disciplines') $fieldCheck = 'discipline';
                         $result[$fieldName] = [
                             'label' => $this->publishedFields[$fieldName],
                             'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $job[$fieldCheck]['name'] . '</span>'
