@@ -256,10 +256,12 @@ class Wp_EazyCV_Jobs
                     if (!empty($job[$fieldName])) {
                         $fieldCheck = str_replace('_id', '', $fieldName);
                         if ($fieldCheck == 'disciplines') $fieldCheck = 'discipline';
-                        $result[$fieldName] = [
-                            'label' => $this->publishedFields[$fieldName],
-                            'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $job[$fieldCheck]['name'] . '</span>'
-                        ];
+                        if (!empty($job[$fieldName])) {
+                            $result[$fieldName] = [
+                                'label' => $this->publishedFields[$fieldName],
+                                'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $job[$fieldCheck]['name'] . '</span>'
+                            ];
+                        }
                     }
                 } else {
                     if (!empty($job[$fieldName])) {
