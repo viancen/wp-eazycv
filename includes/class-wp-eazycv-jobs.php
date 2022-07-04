@@ -256,7 +256,7 @@ class Wp_EazyCV_Jobs
                     if (!empty($job[$fieldName])) {
                         $fieldCheck = str_replace('_id', '', $fieldName);
                         if ($fieldCheck == 'disciplines') $fieldCheck = 'discipline';
-                        if (!empty($job[$fieldName])) {
+                        if (!empty($job[$fieldCheck])) {
                             $result[$fieldName] = [
                                 'label' => $this->publishedFields[$fieldName],
                                 'value' => '<span class="eazycv-field-list-item eazycv-field-' . $fieldName . '">' . $job[$fieldCheck]['name'] . '</span>'
