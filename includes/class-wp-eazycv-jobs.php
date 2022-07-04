@@ -229,6 +229,9 @@ class Wp_EazyCV_Jobs
                     }
                 } elseif ($fieldName == 'cover' || $fieldName == 'logo') {
                     //<a href=' . $ed['url'] . ' target="_blank">
+                    if (empty($job[$fieldName]) && isset($job['company']) && !empty($job['company'][$fieldName])) {
+                        $job[$fieldName] = $job['company'][$fieldName];
+                    }
                     $result[$fieldName] = [
                         'label' => $this->publishedFields[$fieldName],
                         'value' => $job[$fieldName]
