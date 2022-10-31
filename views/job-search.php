@@ -244,7 +244,7 @@ class Wp_EazyCV_Job_Search
             $html .= '<h4><a href="' . $url . '">' . $job['original_functiontitle'] . '</a></h4>';
 
             $publishedFields = $this->jobDetails->getFieldData($job);
-
+            
             if (!empty($publishedFields['cover'])) {
                 unset($publishedFields['cover']);
             }
@@ -265,6 +265,7 @@ class Wp_EazyCV_Job_Search
             }
 
             $html .= '<div class="eazycv-job-row-details">';
+
 
             foreach ($publishedFields as $fieldId => $field) {
                 $html .= '<div class="eazycv-search-job-item-row eazycv-published-item eazycv-job-row-item-' . $fieldId . '">

@@ -123,10 +123,11 @@ class Wp_EazyCV_Jobs
      */
     public function getFieldData($job)
     {
-
-
         if (isset($job['educations'])) {
             $job['education'] = $job['educations'];
+        }
+        if (isset($job['disciplines'])) {
+            $job['discipline'] = $job['disciplines'];
         }
         if (isset($job['main_level'])) {
             $job['level'] = $job['main_level'];
@@ -142,6 +143,7 @@ class Wp_EazyCV_Jobs
         $job['hours'] = '';
 
 
+     //   dump($job);
         foreach ($job as $fieldName => $fieldValue) {
 
             if (in_array($fieldName, $enabledFields)) {
